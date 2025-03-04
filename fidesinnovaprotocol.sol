@@ -442,7 +442,7 @@ contract CommitmentStorage {
         return commitments.length;
     }
 }
-
+//.....................
 //  ZKPStorage.sol
 contract ZKPStorage {
     struct ZKP {
@@ -537,6 +537,7 @@ contract ZKPStorage {
         );
     }
 }
+
 
 contract Protocol is ServiceManagement, CommitmentStorage, ZKPStorage {
     constructor(address initialOwner)
