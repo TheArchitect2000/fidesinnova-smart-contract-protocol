@@ -1,56 +1,14 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.18;
+pragma solidity 0.8.20;
+
+
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/utils/Context.sol";
+//import "./AccessManagers.sol"; // 
 
 //  AccessManagers.sol
-abstract contract Context {
-    function _msgSender() internal view virtual returns (address) {
-        return msg.sender;
-    }
-}
 
-abstract contract Ownable is Context {
-    address private _owner;
-
-    error OwnableUnauthorizedAccount(address account);
-    error OwnableInvalidOwner(address owner);
-
-    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
-
-    constructor(address initialOwner) {
-        if (initialOwner == address(0)) {
-            revert OwnableInvalidOwner(address(0));
-        }
-        _transferOwnership(initialOwner);
-    }
-
-    modifier onlyOwner() {
-        _checkOwner();
-        _;
-    }
-
-    function owner() public view virtual returns (address) {
-        return _owner;
-    }
-
-    function _checkOwner() internal view virtual {
-        if (owner() != _msgSender()) {
-            revert OwnableUnauthorizedAccount(_msgSender());
-        }
-    }
-
-    function transferOwnership(address newOwner) public virtual onlyOwner {
-        if (newOwner == address(0)) {
-            revert OwnableInvalidOwner(address(0));
-        }
-        _transferOwnership(newOwner);
-    }
-
-    function _transferOwnership(address newOwner) internal virtual {
-        address oldOwner = _owner;
-        _owner = newOwner;
-        emit OwnershipTransferred(oldOwner, newOwner);
-    }
-}
 
 contract AccessManagers is Ownable {
     mapping(address => bool) private isManager;
@@ -442,7 +400,7 @@ contract CommitmentStorage {
         return commitments.length;
     }
 }
-//.....................
+
 //  ZKPStorage.sol
 contract ZKPStorage {
     struct ZKP {
@@ -538,8 +496,54 @@ contract ZKPStorage {
     }
 }
 
+contract DeviceNFT is Ownable, ERC721URIStorage {
+    
+    uint256 private _tokenIdCounter = 1;
 
-contract Protocol is ServiceManagement, CommitmentStorage, ZKPStorage {
+    struct DeviceInfo {
+        string deviceId;
+        string deviceIdType;
+        string manufacturer;
+        string modelNumber;
+        string deviceType;
+    }
+
+    mapping(uint256 => DeviceInfo) public deviceDetails;
+
+    constructor(address initialOwner) ERC721("DeviceNFT", "DNFT") Ownable(initialOwner) {}
+
+    function mintDeviceNFT(
+        address to,
+        string memory deviceId,
+        string memory deviceIdType,
+        string memory manufacturer,
+        string memory modelNumber,
+        string memory deviceType,
+        string memory tokenURI
+    ) public onlyOwner {
+        uint256 newTokenId = _tokenIdCounter;
+        _safeMint(to, newTokenId);
+        _setTokenURI(newTokenId, tokenURI);
+
+        deviceDetails[newTokenId] = DeviceInfo(
+            deviceId,
+            deviceIdType,
+            manufacturer,
+            modelNumber,
+            deviceType
+        );
+
+        _tokenIdCounter++;
+    }
+
+    // _msgSender
+    function _msgSender() internal view override(Context) returns (address) {
+        return super._msgSender();
+    }
+}
+
+
+   contract Protocol is ServiceManagement, CommitmentStorage, ZKPStorage {
     constructor(address initialOwner)
         ServiceManagement(initialOwner)
         CommitmentStorage()
