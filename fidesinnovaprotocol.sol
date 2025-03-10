@@ -639,11 +639,7 @@ contract DeviceNFT {
    contract Protocol is ServiceManagement, CommitmentStorage, ZKPStorage {
     constructor(address initialOwner)
         ServiceManagement(initialOwner)
-        CommitmentStorage(  
-      // Function implementation here...
-  )
-        ZKPStorage(  
-      // Function implementation here...
-  )
+        CommitmentStorage( )
+        ZKPStorage( )
     {}
 }
