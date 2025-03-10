@@ -7,7 +7,21 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Context.sol";
 //import "./AccessManagers.sol"; // 
 
-//  AccessManagers.sol
+//// Description (_checkManager): Verifies whether the provided address is a manager. 
+// If the address is not a manager, the function reverts with an error.
+// Input parameters(_checkManager): account (address) - The address to be checked if it is a manager.
+
+// Description (addManager): Adds a new manager to the system for a specific node. 
+// The function can only be executed by the contract owner. If the address is already a manager, it reverts with an error.
+// Input parameters(addManager): account (address) - The address of the account to be added as a manager, nodeId (string) - The ID of the node.
+
+// Description (removeManager): Removes an existing manager from the system. 
+// The function can only be executed by the contract owner. If the address is not already a manager, it reverts with an error.
+// Input parameters(removeManager): account (address) - The address of the manager to be removed.
+
+// Description (getManagerNodeId): Retrieves the nodeId associated with a specific manager's address. 
+// The function checks if the address is a manager before returning the corresponding nodeId.
+// Input parameters(getManagerNodeId): account (address) - The address of the manager whose nodeId is to be fetched.
 
 
 contract AccessManagers is Ownable {
@@ -67,7 +81,22 @@ contract AccessManagers is Ownable {
     }
 }
 
-//  DeviceManagement.sol
+// Description (createDevice): Creates and registers a new IoT device for a specific node. 
+// The function validates that the device ID is not already registered for the given nodeId, and then stores the device details including 
+// nodeId, deviceId, ownerId, device type, encrypted ID, hardware and firmware versions, parameters, use cost, GPS location, and installation date.
+// The function can only be executed by the manager of the specified node.
+// Input parameters(createDevice): nodeId, deviceId, ownerId, name, deviceType, encryptedID, hardwareVersion, firmwareVersion, parameters,
+// useCost, locationGPS, installationDate.
+
+// Description (removeDevice): Removes an IoT device from a specific node by deleting the device's details based on the provided 
+// targetNodeId and targetDeviceId. The function can only be executed by the manager of the specified node.
+// Input parameters(removeDevice): targetNodeId, targetDeviceId, nodeId.
+
+// Description (fetchAllDevices): Retrieves all devices associated with a specific IoT node identified by nodeId.
+// The function returns an array of Device objects, containing all the device details for the given nodeId.
+// The caller must be the manager of the node to access the data.
+// Input parameters(fetchAllDevices): nodeId.
+
 contract DeviceManagement is AccessManagers {
     struct Device {
         string nodeId;
@@ -173,7 +202,20 @@ contract DeviceManagement is AccessManagers {
     }
 }
 
-//  ServiceManagement.sol
+// Description (createService): Creates a new service for an IoT device, registering the service details such as nodeId, serviceId,
+// name, description, service type, associated devices, prices, image URL, program details, and dates of creation and publication.
+// Input parameters(createService): nodeId, serviceId, name, description, serviceType, devices, installationPrice, executionPrice,
+// imageURL, program, creationDate, publishedDate.
+
+// Description (removeService): Removes an existing service for an IoT device based on the provided targetNodeId, targetServiceId, 
+// and nodeId. Deletes the service record from storage if it matches the provided parameters.
+// Input parameters(removeService): targetNodeId, targetServiceId, nodeId.
+
+// Description (fetchAllServices): Retrieves all services associated with a specific IoT node identified by nodeId.
+// The function returns an array of Service objects, containing all the service details for the given nodeId.
+// The caller must be the manager of the node to access the data.
+// Input parameters(fetchAllServices): nodeId
+
 contract ServiceManagement is DeviceManagement {
     struct Service {
         string nodeId;
@@ -279,7 +321,22 @@ contract ServiceManagement is DeviceManagement {
     }
 }
 
-//  CommitmentStorage.sol
+// // Description (storeCommitment): Stores a commitment for an IoT device with specific details. 
+// Registers the commitment data by saving its unique commitmentID, associated nodeId, device information like 
+// manufacturer name, device name, hardware and firmware version, along with the provided commitment data.
+// If the commitment ID is not already registered, it is saved along with the device details.
+// Input parameters(storeCommitment): commitmentIDو nodeIdو iot_manufacturer_nameو iot_device_name
+// device_hardware_versionو firmware_version commitmentData.
+
+// Description (getCommitment): Retrieves the commitment data for a given IoT device based on the provided commitmentID and nodeId.
+// Returns the details of the commitment, including commitmentID, nodeId, manufacturer name, device name, hardware version, 
+// firmware version, commitment data, and the timestamp when the commitment was stored.
+// Input parameters(getCommitment): commitmentID, nodeId.
+
+// Description (removeCommitment): Removes the commitment data for a specific IoT device based on the provided commitmentID and nodeId.
+// Deletes the commitment record from storage, if it exists, for the given commitmentID and nodeId.
+// Input parameters(removeCommitment): commitmentID, nodeId.
+
 contract CommitmentStorage {
     struct Commitment {
         string commitmentID;
@@ -401,7 +458,19 @@ contract CommitmentStorage {
     }
 }
 
-//  ZKPStorage.sol
+
+
+// Description (storeZKP): Stores and retrieves Zero-Knowledge Proof (ZKP) data for IoT devices.
+// Checks if an identity is already registered before adding. 
+// If registered, returns an error with the existing node_id and identity_address.
+//Input parameters(storeZKP): identity_address, nodeId, deviceId, deviceType, hardwareVersion,
+//firmwareVersion, zkp_payload, data_payload, unixtime_payload.
+
+// Description (getZKP): Retrieves Zero-Knowledge Proof (ZKP) data for an IoT device based on the provided index.
+// Returns the associated device information including nodeId, deviceId, deviceType, hardwareVersion, firmwareVersion,
+// and additional data such as zkp_payload, data_payload, unixtime_payload, and the timestamp of the entry.
+//Input parameters(getZKP): index- The index to identify the ZKP data entry to retrieve.
+
 contract ZKPStorage {
     struct ZKP {
         string nodeId;
@@ -496,57 +565,85 @@ contract ZKPStorage {
     }
 }
 
-contract DeviceNFT is Ownable, ERC721URIStorage {
-    
-    uint256 private _tokenIdCounter = 1;
 
-    struct DeviceInfo {
-        string deviceId;
-        string deviceIdType;
-        string manufacturer;
-        string modelNumber;
-        string deviceType;
+//Description: Check to add only one identity - check to see if it has been registered. If so,
+//return error with the registered node_id, identity_address.
+//Input parameters: identity_address, node_id
+contract Sign_identity {
+     struct Identity {
+        address identity_address;
+        string node_id;
     }
-
-    mapping(uint256 => DeviceInfo) public deviceDetails;
-
-    constructor(address initialOwner) ERC721("DeviceNFT", "DNFT") Ownable(initialOwner) {}
-
-    function mintDeviceNFT(
-        address to,
-        string memory deviceId,
-        string memory deviceIdType,
-        string memory manufacturer,
-        string memory modelNumber,
-        string memory deviceType,
-        string memory tokenURI
-    ) public onlyOwner {
-        uint256 newTokenId = _tokenIdCounter;
-        _safeMint(to, newTokenId);
-        _setTokenURI(newTokenId, tokenURI);
-
-        deviceDetails[newTokenId] = DeviceInfo(
-            deviceId,
-            deviceIdType,
-            manufacturer,
-            modelNumber,
-            deviceType
-        );
-
-        _tokenIdCounter++;
-    }
-
-    // _msgSender
-    function _msgSender() internal view override(Context) returns (address) {
-        return super._msgSender();
-    }
+  function register_identity(  
+      // Function implementation here...
+  )
 }
+
+
+
+//Description: Check to add only one ownership - check to see if it has been registered.
+//if so, return error with the registered node_id, identity_address.
+//Input parameters: identity_address, node_id, ownership_address
+contract Sign_ownership {
+    struct Ownership {
+        address ownership_address;
+        address identity_address;
+        string node_id;
+    }
+   function register_ownership(  
+      // Function implementation here...
+  )
+}
+
+
+//Description: Check to see if the binding is not done yet. If it has been already binded,
+//return an error with the registered node_id, identity_address, ownership_address.
+//Input parameters: ownership_address
+contract IdentityBinding {
+    struct Identity {
+        address identity_address;
+        address ownership_address;
+        uint256 node_id;
+    }
+   function bind_identity_ownership(  
+      // Function implementation here...
+  )
+}
+
+
+
+//Description(createNFT function): Check to add only one {device_id, device_id_type, device_type, Manufacturer, device_model} - check to see if it has been created. If so, return error with the ownership_address.
+//Input parameters(createNFT function): ownership_address
+//Description(transferNFT function): Check to add only one {device_id, device_id_type, device_type, Manufacturer, device_model} - check to see if it has been created. If so, return error with the ownership_address.
+//Input parameters(transferNFT function): nft_id, receiver_ownership_address
+contract DeviceNFT {
+    struct Device {
+        string device_id;
+        string device_id_type;
+        string device_type;
+        string manufacturer;
+        string device_model;
+        address ownership_address;
+    }
+   function createNFT(  
+      // Function implementation here...
+  )
+   function transferNFT(  
+      // Function implementation here...
+  )
+}
+
+
 
 
    contract Protocol is ServiceManagement, CommitmentStorage, ZKPStorage {
     constructor(address initialOwner)
         ServiceManagement(initialOwner)
-        CommitmentStorage()
-        ZKPStorage()
+        CommitmentStorage(  
+      // Function implementation here...
+  )
+        ZKPStorage(  
+      // Function implementation here...
+  )
     {}
 }

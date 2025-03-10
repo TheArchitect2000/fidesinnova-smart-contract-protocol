@@ -20,3 +20,181 @@ This smart contract includes all the necessary Solidity code on the Fides Innova
 - Create NFTs for IoT devices or AI computations
 - Transfer IoT device NFTs between users’ ownership wallets
 - Bind users’ identity wallets to their ownership wallets
+
+
+## Protocol Contract Overview
+
+The `Protocol` contract inherits from the following contracts:
+
+- **ServiceManagement**: Manages service-related functions.
+- **CommitmentStorage**: Manages commitment records for IoT devices.
+- **ZKPStorage**: Manages Zero-Knowledge Proof (ZKP) data for IoT devices.
+- **Sign_identity**: Handles the registration of identities.
+- **Sign_ownership**: Handles the registration of ownerships.
+- **IdentityBinding**: Binds identities to ownerships.
+- **DeviceNFT**: Manages NFT creation and transfer for IoT devices.
+
+The `Protocol` contract integrates these functionalities into one unified service for managing commitments, ZKPs, identities, ownerships, and NFTs for IoT devices.
+
+## Functions Overview
+
+### CommitmentStorage Contract
+
+#### `storeCommitment`
+**Description**: Stores a commitment for an IoT device with its specific details. It saves the commitment data only if the `commitmentID` is not already registered.
+
+**Input Parameters**:
+- `commitmentID`: The unique identifier for the commitment.
+- `nodeId`: The unique identifier for the IoT node.
+- `iot_manufacturer_name`: The name of the IoT manufacturer.
+- `iot_device_name`: The name of the IoT device.
+- `device_hardware_version`: The hardware version of the IoT device.
+- `firmware_version`: The firmware version of the IoT device.
+- `commitmentData`: The commitment data associated with the device.
+
+**Returns**:
+- `bool`: Returns true if the commitment is successfully stored.
+
+#### `getCommitment`
+**Description**: Retrieves the commitment data for a given IoT device based on the provided `commitmentID` and `nodeId`.
+
+**Input Parameters**:
+- `commitmentID`: The unique identifier for the commitment.
+- `nodeId`: The unique identifier for the IoT node.
+
+**Returns**:
+- `commitmentIDResult`: The commitment ID.
+- `nodeIdResult`: The node ID.
+- `iot_manufacturer_name`: Manufacturer name.
+- `iot_device_name`: Device name.
+- `device_hardware_version`: Device hardware version.
+- `firmware_version`: Firmware version.
+- `commitmentData`: The commitment data.
+- `timestamp`: Timestamp when the commitment was stored.
+
+#### `removeCommitment`
+**Description**: Removes the commitment data for a specific IoT device based on the provided `commitmentID` and `nodeId`.
+
+**Input Parameters**:
+- `commitmentID`: The unique identifier for the commitment.
+- `nodeId`: The unique identifier for the IoT node.
+
+**Returns**: None.
+
+#### `getCommitmentCount`
+**Description**: Retrieves the total number of commitments stored.
+
+**Returns**:
+- `uint256`: The total count of stored commitments.
+
+---
+
+### ZKPStorage Contract
+
+#### `storeZKP`
+**Description**: Stores Zero-Knowledge Proof (ZKP) data for an IoT device.
+
+**Input Parameters**:
+- `nodeId`: The unique identifier for the IoT node.
+- `deviceId`: The unique identifier for the IoT device.
+- `deviceType`: The type of the IoT device.
+- `hardwareVersion`: The hardware version of the IoT device.
+- `firmwareVersion`: The firmware version of the IoT device.
+- `zkp_payload`: The Zero-Knowledge Proof data (bytes).
+- `data_payload`: The associated data payload.
+- `unixtime_payload`: The Unix timestamp payload.
+
+**Returns**: None.
+
+#### `getZKPCount`
+**Description**: Retrieves the total number of ZKP entries stored.
+
+**Returns**:
+- `uint256`: The total count of stored ZKP entries.
+
+#### `getZKP`
+**Description**: Retrieves a specific ZKP data entry based on its index.
+
+**Input Parameters**:
+- `index`: The index of the ZKP data entry to retrieve.
+
+**Returns**:
+- `nodeId`: The unique identifier for the IoT node.
+- `deviceId`: The unique identifier for the IoT device.
+- `deviceType`: The type of the IoT device.
+- `hardwareVersion`: The hardware version of the IoT device.
+- `firmwareVersion`: The firmware version of the IoT device.
+- `zkp_payload`: The Zero-Knowledge Proof data (bytes).
+- `data_payload`: The associated data payload.
+- `unixtime_payload`: The Unix timestamp payload.
+- `timestamp`: Timestamp when the ZKP was stored.
+
+---
+
+### Identity Management Contracts
+
+#### `register_identity`
+**Description**: Registers a unique identity for a given IoT device. Ensures that the identity is not already registered.
+
+**Input Parameters**:
+- `identity_address`: The address associated with the identity.
+- `node_id`: The unique identifier for the IoT node.
+
+**Returns**: None.
+
+#### `register_ownership`
+**Description**: Registers the ownership for a given IoT device and ensures the ownership is not already registered.
+
+**Input Parameters**:
+- `identity_address`: The address of the identity.
+- `node_id`: The unique identifier for the IoT node.
+- `ownership_address`: The address associated with the ownership.
+
+**Returns**: None.
+
+#### `bind_identity_ownership`
+**Description**: Binds an identity to an ownership address. Checks if the binding has been done already.
+
+**Input Parameters**:
+- `ownership_address`: The address associated with the ownership.
+
+**Returns**: None.
+
+---
+
+### Device NFT Management
+
+#### `createNFT`
+**Description**: Creates a unique NFT for an IoT device. Ensures that the NFT has not been created for the given device before.
+
+**Input Parameters**:
+- `ownership_address`: The address associated with the ownership.
+
+**Returns**: None.
+
+#### `transferNFT`
+**Description**: Transfers ownership of an IoT device's NFT to a new ownership address.
+
+**Input Parameters**:
+- `nft_id`: The unique identifier for the NFT.
+- `receiver_ownership_address`: The address of the new owner.
+
+**Returns**: None.
+
+---
+
+## Smart Contract Inheritance
+
+The `Protocol` contract inherits from the following contracts:
+
+- **ServiceManagement**: Manages service-related functions.
+- **CommitmentStorage**: Manages commitment records for IoT devices.
+- **ZKPStorage**: Manages Zero-Knowledge Proof (ZKP) data for IoT devices.
+- **Sign_identity**: Handles the registration of identities.
+- **Sign_ownership**: Handles the registration of ownerships.
+- **IdentityBinding**: Binds identities to ownerships.
+- **DeviceNFT**: Manages NFT creation and transfer for IoT devices.
+
+---
+
+
