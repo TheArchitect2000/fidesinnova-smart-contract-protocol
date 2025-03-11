@@ -5,7 +5,6 @@ pragma solidity 0.8.20;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Context.sol";
-//import "./AccessManagers.sol"; // 
 
 //// Description (_checkManager): Verifies whether the provided address is a manager. 
 // If the address is not a manager, the function reverts with an error.
@@ -85,7 +84,7 @@ contract AccessManagers is Ownable {
 // The function validates that the device ID is not already registered for the given nodeId, and then stores the device details including 
 // nodeId, deviceId, ownerId, device type, encrypted ID, hardware and firmware versions, parameters, use cost, GPS location, and installation date.
 // The function can only be executed by the manager of the specified node.
-// Input parameters(createDevice): nodeId, deviceId, ownerId, name, deviceType, encryptedID, hardwareVersion, firmwareVersion, parameters,
+// Input parameters(createDevice): nodeId, deviceId, ownerId, deviceType, deviceIdType, deviceModel, manufacturer, encryptedID, hardwareVersion, firmwareVersion, parameters,
 // useCost, locationGPS, installationDate.
 
 // Description (removeDevice): Removes an IoT device from a specific node by deleting the device's details based on the provided 
@@ -102,9 +101,11 @@ contract DeviceManagement is AccessManagers {
         string nodeId;
         string deviceId;
         string ownerId;
-        string name;
         string deviceType;
+        string deviceIdType;
+        string deviceModel;
         string encryptedID;
+        string manufacturer;
         string hardwareVersion;
         string firmwareVersion;
         string[] parameters;
@@ -127,18 +128,20 @@ contract DeviceManagement is AccessManagers {
     event DeviceRemoved(uint256 indexed id, Device device);
 
     function createDevice(
-        string memory nodeId,
-        string memory deviceId,
-        string memory ownerId,
-        string memory name,
-        string memory deviceType,
-        string memory encryptedID,
-        string memory hardwareVersion,
-        string memory firmwareVersion,
-        string[] memory parameters,
-        string memory useCost,
-        string[] memory locationGPS,
-        string memory installationDate
+        string memory nodeId;
+        string memory deviceId;
+        string memory ownerId;
+        string memory deviceType;
+        string memory deviceIdType;
+        string memory deviceModel;
+        string memory encryptedID;
+        string memory manufacturer;
+        string memory hardwareVersion;
+        string memory firmwareVersion;
+        string[] memory parameters;
+        string memory useCost;
+        string[] memory locationGPS;
+        string memory installationDate;
     ) external onlyManagerOfNode(nodeId) returns (uint256) {
         if (s_deviceFindId[nodeId][deviceId] != 0) {
             revert DeviceManagement__DuplicatedId(nodeId, deviceId);
@@ -148,8 +151,10 @@ contract DeviceManagement is AccessManagers {
             nodeId,
             deviceId,
             ownerId,
-            name,
+            deviceModel,
             deviceType,
+            deviceIdType,
+            manufacturer,
             encryptedID,
             hardwareVersion,
             firmwareVersion,
@@ -325,8 +330,8 @@ contract ServiceManagement is DeviceManagement {
 // Registers the commitment data by saving its unique commitmentID, associated nodeId, device information like 
 // manufacturer name, device name, hardware and firmware version, along with the provided commitment data.
 // If the commitment ID is not already registered, it is saved along with the device details.
-// Input parameters(storeCommitment): commitmentIDو nodeIdو iot_manufacturer_nameو iot_device_name
-// device_hardware_versionو firmware_version commitmentData.
+// Input parameters(storeCommitment): commitmentIDو nodeIdو iotManufacturerNameو iotDeviceName
+// deviceHardwareVersionو firmwareVersion commitmentData.
 
 // Description (getCommitment): Retrieves the commitment data for a given IoT device based on the provided commitmentID and nodeId.
 // Returns the details of the commitment, including commitmentID, nodeId, manufacturer name, device name, hardware version, 
@@ -341,10 +346,10 @@ contract CommitmentStorage {
     struct Commitment {
         string commitmentID;
         string nodeId;
-        string iot_manufacturer_name;
-        string iot_device_name;
-        string device_hardware_version;
-        string firmware_version;
+        string iotManufacturerName;
+        string iotDeviceName;
+        string deviceHardwareVersion;
+        string firmwareVersion;
         string commitmentData;
         uint256 timestamp;
     }
@@ -355,10 +360,10 @@ contract CommitmentStorage {
     event CommitmentStored(
         string commitmentID,
         string nodeId,
-        string iot_manufacturer_name,
-        string iot_device_name,
-        string device_hardware_version,
-        string firmware_version,
+        string iotManufacturerName,
+        string iotDeviceName,
+        string deviceHardwareVersion,
+        string firmwareVersion,
         string commitmentData,
         uint256 timestamp
     );
@@ -368,10 +373,10 @@ contract CommitmentStorage {
     function storeCommitment(
         string memory commitmentID,
         string memory nodeId,
-        string memory iot_manufacturer_name,
-        string memory iot_device_name,
-        string memory device_hardware_version,
-        string memory firmware_version,
+        string memory iotManufacturerName,
+        string memory iotDeviceName,
+        string memory deviceHardwareVersion,
+        string memory firmwareVersion,
         string memory commitmentData
     ) public returns (bool) {
         if (commitmentIDs[commitmentID]) {
@@ -381,10 +386,10 @@ contract CommitmentStorage {
         commitments.push(Commitment({
             commitmentID: commitmentID,
             nodeId: nodeId,
-            iot_manufacturer_name: iot_manufacturer_name,
-            iot_device_name: iot_device_name,
-            device_hardware_version: device_hardware_version,
-            firmware_version: firmware_version,
+            iotManufacturerName: iotManufacturerName,
+            iotDeviceName: iotDeviceName,
+            deviceHardwareVersion: deviceHardwareVersion,
+            firmwareVersion: firmwareVersion,
             commitmentData: commitmentData,
             timestamp: block.timestamp
         }));
@@ -394,10 +399,10 @@ contract CommitmentStorage {
         emit CommitmentStored(
             commitmentID,
             nodeId,
-            iot_manufacturer_name,
-            iot_device_name,
-            device_hardware_version,
-            firmware_version,
+            iotManufacturerName,
+            iotDeviceName,
+            deviceHardwareVersion,
+            firmwareVersion,
             commitmentData,
             block.timestamp
         );
@@ -408,10 +413,10 @@ contract CommitmentStorage {
     function getCommitment(string memory commitmentID, string memory nodeId) public view returns (
         string memory commitmentIDResult,
         string memory nodeIdResult,
-        string memory iot_manufacturer_name,
-        string memory iot_device_name,
-        string memory device_hardware_version,
-        string memory firmware_version,
+        string memory iotManufacturerName,
+        string memory iotDeviceName,
+        string memory deviceHardwareVersion,
+        string memory firmwareVersion,
         string memory commitmentData,
         uint256 timestamp
     ) {
@@ -422,10 +427,10 @@ contract CommitmentStorage {
                 return (
                     commitment.commitmentID,
                     commitment.nodeId,
-                    commitment.iot_manufacturer_name,
-                    commitment.iot_device_name,
-                    commitment.device_hardware_version,
-                    commitment.firmware_version,
+                    commitment.iotManufacturerName,
+                    commitment.iotDeviceName,
+                    commitment.deviceHardwareVersion,
+                    commitment.firmwareVersion,
                     commitment.commitmentData,
                     commitment.timestamp
                 );
@@ -462,13 +467,13 @@ contract CommitmentStorage {
 
 // Description (storeZKP): Stores and retrieves Zero-Knowledge Proof (ZKP) data for IoT devices.
 // Checks if an identity is already registered before adding. 
-// If registered, returns an error with the existing node_id and identity_address.
-//Input parameters(storeZKP): identity_address, nodeId, deviceId, deviceType, hardwareVersion,
-//firmwareVersion, zkp_payload, data_payload, unixtime_payload.
+// If registered, returns an error with the existing nodeId and identityAddress.
+//Input parameters(storeZKP): identityAddress, nodeId, deviceId, deviceType, hardwareVersion,
+//firmwareVersion, zkpPayload, dataPayload, unixtimePayload.
 
 // Description (getZKP): Retrieves Zero-Knowledge Proof (ZKP) data for an IoT device based on the provided index.
 // Returns the associated device information including nodeId, deviceId, deviceType, hardwareVersion, firmwareVersion,
-// and additional data such as zkp_payload, data_payload, unixtime_payload, and the timestamp of the entry.
+// and additional data such as zkpPayload, dataPayload, unixtimePayload, and the timestamp of the entry.
 //Input parameters(getZKP): index- The index to identify the ZKP data entry to retrieve.
 
 contract ZKPStorage {
@@ -478,9 +483,9 @@ contract ZKPStorage {
         string deviceType;
         string hardwareVersion;
         string firmwareVersion;
-        bytes zkp_payload;
-        string data_payload;
-        string unixtime_payload;
+        bytes zkpPayload;
+        string dataPayload;
+        string unixtimePayload;
         uint256 timestamp;
     }
 
@@ -492,9 +497,9 @@ contract ZKPStorage {
         string deviceType,
         string hardwareVersion,
         string firmwareVersion,
-        bytes zkp_payload,
-        string data_payload,
-        string unixtime_payload,
+        bytes zkpPayload,
+        string dataPayload,
+        string unixtimePayload,
         uint256 timestamp
     );
 
@@ -504,9 +509,9 @@ contract ZKPStorage {
         string memory deviceType,
         string memory hardwareVersion,
         string memory firmwareVersion,
-        bytes memory zkp_payload,
-        string memory data_payload,
-        string memory unixtime_payload
+        bytes memory zkpPayload,
+        string memory dataPayload,
+        string memory unixtimePayload
     ) public {
         zkps.push(ZKP({
             nodeId: nodeId,
@@ -514,9 +519,9 @@ contract ZKPStorage {
             deviceType: deviceType,
             hardwareVersion: hardwareVersion,
             firmwareVersion: firmwareVersion,
-            zkp_payload: zkp_payload,
-            data_payload: data_payload,
-            unixtime_payload: unixtime_payload,
+            zkpPayload: zkpPayload,
+            dataPayload: dataPayload,
+            unixtimePayload: unixtimePayload,
             timestamp: block.timestamp
         }));
 
@@ -526,9 +531,9 @@ contract ZKPStorage {
             deviceType,
             hardwareVersion,
             firmwareVersion,
-            zkp_payload,
-            data_payload,
-            unixtime_payload,
+            zkpPayload,
+            dataPayload,
+            unixtimePayload,
             block.timestamp
         );
     }
@@ -543,9 +548,9 @@ contract ZKPStorage {
         string memory deviceType,
         string memory hardwareVersion,
         string memory firmwareVersion,
-        bytes memory zkp_payload,
-        string memory data_payload,
-        string memory unixtime_payload,
+        bytes memory zkpPayload,
+        string memory dataPayload,
+        string memory unixtimePayload,
         uint256 timestamp
     ) {
         require(index < zkps.length, "Index out of bounds");
@@ -557,9 +562,9 @@ contract ZKPStorage {
             zkp.deviceType,
             zkp.hardwareVersion,
             zkp.firmwareVersion,
-            zkp.zkp_payload,
-            zkp.data_payload,
-            zkp.unixtime_payload,
+            zkp.zkpPayload,
+            zkp.dataPayload,
+            zkp.unixtimePayload,
             zkp.timestamp
         );
     }
@@ -567,12 +572,12 @@ contract ZKPStorage {
 
 
 //Description: Check to add only one identity - check to see if it has been registered. If so,
-//return error with the registered node_id, identity_address.
-//Input parameters: identity_address, node_id
+//return error with the registered nodeId, identityAddress.
+//Input parameters: identityAddress, nodeId
 contract Sign_identity {
      struct Identity {
-        address identity_address;
-        string node_id;
+        address identityAddress;
+        string nodeId;
     }
   function register_identity(  
       // Function implementation here...
@@ -582,13 +587,13 @@ contract Sign_identity {
 
 
 //Description: Check to add only one ownership - check to see if it has been registered.
-//if so, return error with the registered node_id, identity_address.
-//Input parameters: identity_address, node_id, ownership_address
+//if so, return error with the registered nodeId, identityAddress.
+//Input parameters: identityAddress, nodeId, ownershipAddress
 contract Sign_ownership {
     struct Ownership {
-        address ownership_address;
-        address identity_address;
-        string node_id;
+        address ownershipAddress;
+        address identityAddress;
+        string nodeId;
     }
    function register_ownership(  
       // Function implementation here...
@@ -597,13 +602,13 @@ contract Sign_ownership {
 
 
 //Description: Check to see if the binding is not done yet. If it has been already binded,
-//return an error with the registered node_id, identity_address, ownership_address.
-//Input parameters: ownership_address
+//return an error with the registered nodeId, identityAddress, ownershipAddress.
+//Input parameters: ownershipAddress
 contract IdentityBinding {
     struct Identity {
-        address identity_address;
-        address ownership_address;
-        uint256 node_id;
+        address identityAddress;
+        address ownershipAddress;
+        uint256 nodeId;
     }
    function bind_identity_ownership(  
       // Function implementation here...
@@ -612,18 +617,18 @@ contract IdentityBinding {
 
 
 
-//Description(createNFT function): Check to add only one {device_id, device_id_type, device_type, Manufacturer, device_model} - check to see if it has been created. If so, return error with the ownership_address.
-//Input parameters(createNFT function): ownership_address
-//Description(transferNFT function): Check to add only one {device_id, device_id_type, device_type, Manufacturer, device_model} - check to see if it has been created. If so, return error with the ownership_address.
-//Input parameters(transferNFT function): nft_id, receiver_ownership_address
+//Description(createNFT function): Check to add only one {deviceId, deviceIdType, deviceType, Manufacturer, deviceModel} - check to see if it has been created. If so, return error with the ownershipAddress.
+//Input parameters(createNFT function): ownershipAddress
+//Description(transferNFT function): Check to add only one {deviceId, deviceIdType, deviceType, Manufacturer, deviceModel} - check to see if it has been created. If so, return error with the ownershipAddress.
+//Input parameters(transferNFT function): nft_id, receiver_ownershipAddress
 contract DeviceNFT {
     struct Device {
-        string device_id;
-        string device_id_type;
-        string device_type;
+        string deviceId;
+        string deviceIdType;
+        string deviceType;
         string manufacturer;
-        string device_model;
-        address ownership_address;
+        string deviceModel;
+        address ownershipAddress;
     }
    function createNFT(  
       // Function implementation here...

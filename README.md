@@ -38,6 +38,53 @@ The `Protocol` contract integrates these functionalities into one unified servic
 
 ## Functions Overview
 
+### ServiceManagement Contract
+
+#### `publishService`
+**Description**: Publishes a new IoT-related service to the blockchain.
+
+**Input Parameters**:
+- `serviceId`: Unique identifier of the service.
+- `serviceMetadata`: Metadata describing the service.
+- `publisher`: Address of the service publisher.
+**Returns**:
+- `bool`: Returns true if the service is successfully published.
+
+#### `unpublishService`
+**Description**: Removes a published service from the blockchain.
+
+**Input Parameters**:
+- `serviceId`: Unique identifier of the service.
+
+**Returns**:
+- `bool`: Returns true if the service is successfully removed..
+
+
+
+### DeviceManager Contract
+
+#### `registerDevice`
+**Description**: Registers an IoT device under an ownership wallet and assigns it a unique identifier.
+
+**Input Parameters**:
+- `deviceId`: Unique identifier of the IoT device.
+- `owner`: Address of the device owner.
+- `deviceMetadata`:  Metadata containing device information.
+**Returns**:
+- `bool`: Returns true if the device is successfully registered.
+
+
+#### `transferDevice`
+**Description**: Transfers the ownership of an IoT device NFT to another wallet.
+
+**Input Parameters**:
+- `deviceId:`: Unique identifier of the IoT device.
+- `newOwner:`: Address of the new owner.
+
+**Returns**:
+- `bool`: Returns true if the transfer is successful.
+
+
 ### CommitmentStorage Contract
 
 #### `storeCommitment`
