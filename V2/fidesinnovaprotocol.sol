@@ -10,35 +10,35 @@ import "@openzeppelin/contracts/utils/Context.sol";
 
 /**
  * @title AccessManagers
- * @dev A smart contract to manage the roles of managers for different nodes in the system.
- *      - Allows the owner to add and remove managers for specific nodes.
- *      - Ensures that only managers can perform certain actions within the system.
- *      - Provides functionality to check if an address is a manager and retrieve the nodeId associated with it.
+ * @dev A smart contract to manager the node managers of different nodes in the network.
+ *      - Allows the smart contract owner to add or remove node managers of nodes.
+ *      - Ensures that only node managers can perform certain actions within the network.
+ *      - Provides functionality to check if an address is a node manager and retrieve the nodeId associated with it.
  */
 contract AccessManagers is Ownable {
-    mapping(address => bool) private isManager; // Tracks whether an address is a manager
-    mapping(address => string) private managerNodeId; // Maps each manager's address to a specific nodeId
+    mapping(address => bool) private isManager; // Tracks whether an address is a node manager
+    mapping(address => string) private managerNodeId; // Maps each node manager's address to a specific nodeId
 
-    // Custom errors to revert transactions with detailed messages
+    // Custom errors to revert transactions with detailed messages.
     error AccessManagers__IsNotManager(address account);
     error AccessManagers__IsAlreadyManager(address account);
     error AccessManagers__NodeIdMismatch(address account, string nodeId);
 
-    // Events to log when a manager is added or removed
+    // Events raised when a node manager is added or removed.
     event ManagerAdded(address indexed manager, string nodeId);
     event ManagerRemoved(address indexed manager);
 
     /**
-     * @dev Constructor to initialize the contract with the initial owner.
-     *      - Inherits from Ownable to ensure only the owner can execute certain functions.
+     * @dev Constructor to initialize the smart contract with the smart contract owner who is the caller of this contract for the first time..
+     *      - Inherits from Ownable to ensure only the samrt contract owner can execute certain functions.
      * 
-     * @param initialOwner The address of the initial contract owner.
+     * @param initialOwner is the address of the smart contract owner who called this contract for the first time.
      */
     constructor(address initialOwner) Ownable(initialOwner) {}
 
     /**
-     * @dev Modifier to check that the sender is a registered manager.
-     *      - Reverts if the sender is not a manager.
+     * @dev Modifier to check that the sender is a registered node manager.
+     *      - Reverts if the sender is not a node manager.
      */
     modifier onlyManager() {
         _checkManager(msg.sender);
@@ -46,10 +46,10 @@ contract AccessManagers is Ownable {
     }
 
     /**
-     * @dev Modifier to check that the sender is a manager of the specific node.
-     *      - Reverts if the sender is not the manager of the specified node.
+     * @dev Modifier to check that the sender is a node manager of the specific node.
+     *      - Reverts if the sender is not the node manager of the specified node.
      * 
-     * @param nodeId The ID of the node to be checked.
+     * @param nodeId is the ID of the node to be checked.
      */
     modifier onlyManagerOfNode(string memory nodeId) {
         if (keccak256(abi.encodePacked(managerNodeId[msg.sender])) != keccak256(abi.encodePacked(nodeId))) {
@@ -59,10 +59,10 @@ contract AccessManagers is Ownable {
     }
 
     /**
-     * @dev Internal function to check if an address is a registered manager.
-     *      - Reverts with an error if the address is not a manager.
+     * @dev Internal function to check if an address is a registered node manager.
+     *      - Reverts with an error if the address is not a node manager.
      * 
-     * @param account The address to be checked.
+     * @param account is the address to be checked.
      */
     function _checkManager(address account) internal view {
         if (!isManager[account]) {
@@ -71,12 +71,12 @@ contract AccessManagers is Ownable {
     }
 
     /**
-     * @dev Allows the owner to add a new manager to the system.
-     *      - Reverts if the address is already a manager.
-     *      - Assigns the provided nodeId to the manager.
+     * @dev Allows the smart contract owner to add a new node manager to the network.
+     *      - Reverts if the address is already a node manager.
+     *      - Assigns the provided nodeId to the node manager.
      * 
-     * @param account The address of the account to be added as a manager.
-     * @param nodeId The ID of the node that the manager will oversee.
+     * @param account is The address of the account to be added as a node manager.
+     * @param nodeId is The ID of the node that the node manager will oversee.
      */
     function addManager(address account, string memory nodeId) external onlyOwner {
         if (isManager[account]) {
@@ -89,10 +89,10 @@ contract AccessManagers is Ownable {
     }
 
     /**
-     * @dev Allows the owner to remove a manager from the system.
-     *      - Reverts if the address is not a manager.
+     * @dev Allows the smart contract owner to remove a node manager from the network.
+     *      - Reverts if the address is not a node manager.
      * 
-     * @param account The address of the manager to be removed.
+     * @param account is The address of the nodemanager to be removed.
      */
     function removeManager(address account) external onlyOwner {
         if (!isManager[account]) {
@@ -105,10 +105,10 @@ contract AccessManagers is Ownable {
     }
 
     /**
-     * @dev Allows anyone to retrieve the nodeId associated with a specific manager's address.
-     *      - Ensures that the address is a registered manager before fetching the nodeId.
+     * @dev Allows anyone to retrieve the nodeId associated with a specific node manager's address.
+     *      - Ensures that the address is a registered node manager before fetching the nodeId.
      * 
-     * @param account The address of the manager whose nodeId is to be fetched.
+     * @param account is The address of the node manager whose nodeId is to be fetched.
      * @return The nodeId associated with the manager.
      */
     function getManagerNodeId(address account) external view returns (string memory) {
@@ -123,22 +123,22 @@ contract AccessManagers is Ownable {
 /**
  * @title DeviceManagement
  * @dev A smart contract for managing IoT devices within a node.
- *      - Allows the node manager to create, remove, and fetch devices.
- *      - Ensures that devices have unique IDs within the node and prevents duplication.
- *      - Provides functionality to store device details, such as type, model, manufacturer, parameters, and ownership.
- *      - Emits events to notify about device creation and removal.
+ *      - Allows the node manager to create, remove, and fetch IoT devices.
+ *      - Ensures that IoT devices have unique IDs within the node and prevents duplication.
+ *      - Provides functionality to store IoT device details, such as type, model, manufacturer, parameters, ownership, etc.
+ *      - Emits events to notify about IoT device creation and removal.
  */
 contract DeviceManagement is AccessManagers {
     
     struct Device {
-        string nodeId;                // Unique identifier for the node to which the device is registered
-        string deviceId;              // Unique ID for the device (e.g., MAC address, VIN)
+        string nodeId;                // Unique ID for the node to which the device is registered
+        string deviceId;              // Unique ID for the device (e.g., MAC address, VIN number)
         string deviceType;            // Type of the device (e.g., Car, Sensor)
         string deviceIdType;          // Type of the device ID (e.g., 'MAC', 'VIN')
         string deviceModel;           // Model of the device (e.g., 'zkMultiSensor', 'ECard')
         string manufacturer;          // Manufacturer of the device (e.g., 'Simense', 'Tesla')
         string[] parameters;          // Parameters of the device (e.g., ['temperature', 'humidity'])
-        string useCost;               // Cost of using the device (e.g., '23')
+        string useCost;               // Cost of using the device (e.g., '23') FDS token
         string[] deviceCoordination;  // GPS coordinates of the device (e.g., [23.4, 45.6])
         string ownernershipId;        // Digital ownership ID of the device (e.g., wallet address)
         uint256 sharedTimestamp;      // Timestamp when the device was shared
@@ -152,8 +152,8 @@ contract DeviceManagement is AccessManagers {
     constructor(address initialOwner) AccessManagers(initialOwner) {}
 
     mapping(uint256 => Device) private s_devices;          // Mapping of device IDs to device details
-    mapping(string => mapping(string => uint256)) s_deviceFindId; // Mapping to find device by node and device ID
-    uint256 s_deviceDatabaseId = 1;                         // Counter for device database IDs
+    mapping(string => mapping(string => uint256)) s_deviceFindId; // Mapping to find device by nodeId and device ID
+    uint256 s_deviceDatabaseId = 1;                         // Counter for the number of device IDs inside the database
     uint256[] private s_deviceIDs;                          // Array to store device IDs
 
     // Events for device creation and removal
@@ -166,18 +166,18 @@ contract DeviceManagement is AccessManagers {
      *      - Stores the device’s details, including ID, type, model, manufacturer, parameters, cost, etc.
      *      - Emits a `DeviceCreated` event.
      * 
-     * @param nodeId The unique identifier of the node to which the device will be registered.
-     * @param deviceId The unique identifier of the device (e.g., MAC address, VIN).
-     * @param deviceType The type of the device (e.g., "Car", "Sensor").
-     * @param deviceIdType The type of the device ID (e.g., "MAC", "VIN").
-     * @param deviceModel The model of the device (e.g., "zkMultiSensor", "ECard").
-     * @param manufacturer The manufacturer of the device (e.g., "Simense", "Tesla").
-     * @param parameters The device parameters (e.g., ["temperature", "humidity"]).
-     * @param useCost The cost of using the device (e.g., "23").
-     * @param deviceCoordination The GPS coordinates of the device (e.g., [23.4, 45.6]).
-     * @param ownernershipId The digital ownership ID of the device (e.g., wallet address).
-     * @param sharedTimestamp The timestamp indicating when the device was shared.
-     * @param softwareVersion The software/firmware version of the device (e.g., "1.0.0").
+     * @param nodeId: The unique identifier of the node to which the device will be registered.
+     * @param deviceId: The unique identifier of the device (e.g., MAC address, VIN).
+     * @param deviceType: The type of the device (e.g., "Car", "Sensor").
+     * @param deviceIdType: The type of the device ID (e.g., "MAC", "VIN").
+     * @param deviceModel: The model of the device (e.g., "zkMultiSensor", "ECard").
+     * @param manufacturer: The manufacturer of the device (e.g., "Simense", "Tesla").
+     * @param parameters: The device parameters (e.g., ["temperature", "humidity"]).
+     * @param useCost: The cost of using the device (e.g., "23").
+     * @param deviceCoordination: The GPS coordinates of the device (e.g., [23.4, 45.6]).
+     * @param ownernershipId: The digital ownership ID of the device (e.g., wallet address).
+     * @param sharedTimestamp: The timestamp indicating when the device was shared.
+     * @param softwareVersion: The software/firmware version of the device (e.g., "1.0.0").
      * 
      * @return uint256 The unique database ID assigned to the newly created device.
      */
@@ -200,7 +200,7 @@ contract DeviceManagement is AccessManagers {
             revert DeviceManagement__DuplicatedId(nodeId, deviceId);
         }
 
-        // Register the device
+        // Register the IoT device
         s_deviceFindId[nodeId][deviceId] = s_deviceDatabaseId;
         s_devices[s_deviceDatabaseId] = Device(
             nodeId,
@@ -221,7 +221,7 @@ contract DeviceManagement is AccessManagers {
         s_deviceIDs.push(s_deviceDatabaseId);
         emit DeviceCreated(s_deviceDatabaseId, s_devices[s_deviceDatabaseId]);
 
-        // Increment the database ID for the next device
+        // Increase the database ID for the next device
         s_deviceDatabaseId++;
         return s_deviceDatabaseId;
     }
@@ -231,15 +231,16 @@ contract DeviceManagement is AccessManagers {
      *      - Ensures the device exists before attempting removal.
      *      - Emits a `DeviceRemoved` event to confirm the removal.
      * 
-     * @param targetNodeId The node ID from which the device will be removed.
-     * @param targetDeviceId The device ID to be removed.
-     * @param nodeId The node ID executing the function (must be the manager of this node).
+     * @param targetNodeId: The node ID from which the device will be removed.
+     * @param targetDeviceId: The device ID to be removed.
+     * @param nodeId: The node ID executing the function (must be the node manager).
      */
     function removeDevice(
         string memory targetNodeId,
         string memory targetDeviceId,
         string memory nodeId
     ) external onlyManagerOfNode(nodeId) {
+
         // Ensure the device exists
         if (s_deviceFindId[targetNodeId][targetDeviceId] == 0) {
             revert DeviceManagement__DeviceIdNotExist(targetNodeId, targetDeviceId);
@@ -267,10 +268,10 @@ contract DeviceManagement is AccessManagers {
 
     /**
      * @dev Fetches all devices associated with a specific node.
-     *      - Can only be executed by the manager of the node.
+     *      - Can only be executed by the node manager.
      *      - Returns an array of device details.
      * 
-     * @param nodeId The unique identifier of the node for which the device details are to be fetched.
+     * @param nodeId: The unique identifier of the node for which the device details are to be fetched.
      * 
      * @return Device[] An array of `Device` structs containing the details of all devices in the node.
      */
@@ -293,25 +294,25 @@ contract DeviceManagement is AccessManagers {
 
 /**
  * @title ServiceManagement
- * @dev This contract manages the creation, removal, and retrieval of IoT services associated with specific nodes.
+ * @dev This contract manages the creation, removal, and Fetching of IoT services associated with specific nodes.
  * Each service has a unique ID within a node and contains metadata such as name, description, type, associated devices,
- * pricing information, image URL, and timestamps for creation and publication.
+ * pricing information, image URL, and timestamps for creation and publication, etc.
  */
 contract ServiceManagement is DeviceManagement {
     /**
      * @dev Structure representing a service entity.
-     * @param nodeId Unique identifier of the node the service belongs to.
-     * @param serviceId Unique identifier for the service within the node.
-     * @param name Name of the service.
-     * @param description Brief description of the service.
-     * @param serviceType Type of the service (e.g., 'Automation', 'MachineLearning').
-     * @param devices List of associated device IDs.
-     * @param installationPrice Cost of installing the service.
-     * @param executionPrice Cost of executing the service.
-     * @param imageUrl URL linking to the service image.
-     * @param program Program code defining the service logic.
-     * @param creationDate Timestamp marking the service creation.
-     * @param publishedDate Timestamp marking when the service was published.
+     * @param nodeId: Unique identifier of the node the service belongs to.
+     * @param serviceId: Unique identifier for the service within the node.
+     * @param name: Name of the service.
+     * @param description: Brief description of the service.
+     * @param serviceType: Type of the service (e.g., 'Automation', 'MachineLearning').
+     * @param devices: List of associated device IDs.
+     * @param installationPrice: Cost of installing the service.
+     * @param executionPrice: Cost of executing the service.
+     * @param imageUrl: URL linking to the service image.
+     * @param program: Program code defining the service logic.
+     * @param creationDate: Timestamp marking the service creation.
+     * @param publishedDate: Timestamp marking when the service was published.
      */
     struct Service {
         string nodeId;
@@ -359,18 +360,18 @@ contract ServiceManagement is DeviceManagement {
      * @dev Ensures the service ID is unique within the node before storing service details.
      * Emits a `ServiceCreated` event upon success.
      * 
-     * @param nodeId Unique identifier of the node.
-     * @param serviceId Unique identifier for the service within the node.
-     * @param name Name of the service.
-     * @param description Description of the service.
-     * @param serviceType Type of the service (e.g., 'Automation', 'MachineLearning').
-     * @param devices List of associated device IDs.
-     * @param installationPrice Cost of installing the service.
-     * @param executionPrice Cost of executing the service.
-     * @param imageUrl URL linking to the service image.
-     * @param program Program code defining the service logic.
-     * @param creationDate Timestamp marking the service creation.
-     * @param publishedDate Timestamp marking when the service was published.
+     * @param nodeId: Unique identifier of the node.
+     * @param serviceId: Unique identifier for the service within the node.
+     * @param name: Name of the service.
+     * @param description: Description of the service.
+     * @param serviceType: Type of the service (e.g., 'Automation', 'MachineLearning').
+     * @param devices: List of associated device IDs.
+     * @param installationPrice: Cost of installing the service.
+     * @param executionPrice: Cost of executing the service.
+     * @param imageUrl: URL linking to the service image.
+     * @param program: Program code defining the service logic.
+     * @param creationDate: Timestamp marking the service creation.
+     * @param publishedDate: Timestamp marking when the service was published.
      * @return uint256 The unique database ID assigned to the newly created service.
      */
     function createService(
@@ -417,9 +418,9 @@ contract ServiceManagement is DeviceManagement {
      * @dev Ensures that the service exists before removal.
      * Emits a `ServiceRemoved` event upon success.
      * 
-     * @param targetNodeId The node identifier from which the service should be removed.
-     * @param targetServiceId The service identifier to remove.
-     * @param nodeId The identifier of the node executing the function (must be the manager of this node).
+     * @param targetNodeId: The node identifier from which the service should be removed.
+     * @param targetServiceId: The service identifier to remove.
+     * @param nodeId: The identifier of the node executing the function (must be the manager of this node).
      */
     function removeService(
         string memory targetNodeId,
@@ -448,7 +449,7 @@ contract ServiceManagement is DeviceManagement {
      * @notice Retrieves all services associated with a given node.
      * @dev Can only be executed by the manager of the node.
      * 
-     * @param nodeId The unique identifier of the node.
+     * @param nodeId: The unique identifier of the node.
      * @return Service[] An array containing details of all services within the specified node.
      */
     function fetchAllServices(
@@ -467,20 +468,20 @@ contract ServiceManagement is DeviceManagement {
 /**
  * @title CommitmentStorage
  * @dev This contract allows storing, retrieving, and removing commitments for IoT devices.
- * Commitments contain various metadata including device details, commitment data, and timestamps.
+ * Commitments contain various metadata including device details, commitment data, timestamps, etc.
  */
 contract CommitmentStorage {
     /**
      * @dev Struct to store commitment details.
-     * @param commitmentId Unique identifier for the commitment.
-     * @param nodeId Unique identifier of the node where the commitment is registered.
-     * @param deviceType Type of the IoT device (e.g., 'Sensor', 'Actuator').
-     * @param deviceIdType Type of the device identifier (e.g., 'MAC', 'VIN').
-     * @param deviceModel Model of the IoT device.
-     * @param manufacturer Manufacturer of the IoT device.
-     * @param softwareVersion Software or firmware version of the device.
-     * @param commitment Actual commitment data adhering to a certain specification.
-     * @param timestamp Timestamp when the commitment was stored.
+     * @param commitmentId:Unique identifier for the commitment.
+     * @param nodeId: Unique identifier of the node where the commitment is registered.
+     * @param deviceType: Type of the IoT device (e.g., 'Sensor', 'Actuator').
+     * @param deviceIdType: Type of the device identifier (e.g., 'MAC', 'VIN').
+     * @param deviceModel: Model of the IoT device.
+     * @param manufacturer: Manufacturer of the IoT device.
+     * @param softwareVersion: Software or firmware version of the device.
+     * @param commitment: Actual commitment data adhering to a certain specification.
+     * @param timestamp: Timestamp when the commitment was stored.
      */
     struct Commitment {
         string commitmentId;
@@ -522,15 +523,15 @@ contract CommitmentStorage {
 
     /**
      * @notice Store a commitment for an IoT device.
-     * @param commitmentId Unique identifier for the commitment.
-     * @param nodeId Node ID where the commitment is registered.
-     * @param deviceType Type of the IoT device.
-     * @param deviceIdType Type of the device identifier.
-     * @param deviceModel Model of the IoT device.
-     * @param manufacturer Manufacturer name of the IoT device.
-     * @param softwareVersion Software or firmware version.
-     * @param commitment The commitment data.
-     * @param timestamp Timestamp of the commitment.
+     * @param commitmentId: Unique identifier for the commitment.
+     * @param nodeId: Node ID where the commitment is registered.
+     * @param deviceType: Type of the IoT device.
+     * @param deviceIdType: Type of the device identifier.
+     * @param deviceModel: Model of the IoT device.
+     * @param manufacturer: Manufacturer name of the IoT device.
+     * @param softwareVersion: Software or firmware version.
+     * @param commitment: The commitment data.
+     * @param timestamp: Timestamp of the commitment.
      * @return bool Returns true if the commitment was successfully stored.
      */
     function storeCommitment(
@@ -569,8 +570,8 @@ contract CommitmentStorage {
 
     /**
      * @notice Retrieve commitment data based on the commitment ID and node ID.
-     * @param commitmentId Unique identifier of the commitment.
-     * @param nodeId Node ID where the commitment is registered.
+     * @param commitmentId: Unique identifier of the commitment.
+     * @param nodeId: Node ID where the commitment is registered.
      * @return All stored details of the commitment.
      */
     function getCommitment(
@@ -598,8 +599,8 @@ contract CommitmentStorage {
 
     /**
      * @notice Remove a commitment based on the commitment ID and node ID.
-     * @param commitmentId Unique identifier of the commitment to remove.
-     * @param nodeId Node ID associated with the commitment.
+     * @param commitmentId: Unique identifier of the commitment to remove.
+     * @param nodeId: Node ID associated with the commitment.
      */
     function removeCommitment(string memory commitmentId, string memory nodeId) public {
         for (uint256 i = 0; i < commitments.length; i++) {
@@ -626,8 +627,8 @@ contract CommitmentStorage {
     }
 
     /**
-     * @notice Retrieve all stored commitments. (Function implementation required)
-     * @dev This function is currently unimplemented and should return an array of all commitments.
+     * @notice Retrieve all stored commitments. (Function implementation is required)
+     * @dev This function should return an array contains all the commitments.
      */
     function getAllCommitmentsData() public view returns (Commitment[] memory) {
         return commitments;
@@ -675,17 +676,17 @@ contract ZKPStorage {
 
     /**
      * @dev Emitted when a new ZKP is stored.
-     * @param nodeId The unique identifier of the node.
-     * @param deviceId The unique identifier of the IoT device.
-     * @param deviceType The type of the IoT device.
-     * @param deviceIdType The type of the device ID.
-     * @param deviceModel The model of the IoT device.
-     * @param manufacturer The manufacturer of the IoT device.
-     * @param softwareVersion The software/firmware version of the IoT device.
-     * @param zkpPayload The ZKP data associated with the IoT device.
-     * @param dataPayload The IoT device's data.
-     * @param unixtimePayload The Unix timestamp associated with the device data.
-     * @param timestamp The timestamp when the ZKP entry was created.
+     * @param nodeId: The unique identifier of the node.
+     * @param deviceId: The unique identifier of the IoT device.
+     * @param deviceType: The type of the IoT device.
+     * @param deviceIdType: The type of the device ID.
+     * @param deviceModel: The model of the IoT device.
+     * @param manufacturer: The manufacturer of the IoT device.
+     * @param softwareVersion: The software/firmware version of the IoT device.
+     * @param zkpPayload: The ZKP data associated with the IoT device.
+     * @param dataPayload: The IoT device's data.
+     * @param unixtimePayload: The Unix timestamp associated with the device data.
+     * @param timestamp: The timestamp when the ZKP entry was created.
      */
     event ZKPStored(
     string commitmentID,
@@ -701,17 +702,17 @@ contract ZKPStorage {
 
     /**
      * @dev Stores the ZKP data for an IoT device.
-     * @param nodeId The unique identifier of the node associated with the IoT device.
-     * @param deviceId The unique identifier of the IoT device.
-     * @param deviceType The type of the IoT device.
-     * @param deviceIdType The type of the device ID.
-     * @param deviceModel The model of the IoT device.
-     * @param manufacturer The manufacturer of the IoT device.
-     * @param softwareVersion The software/firmware version of the IoT device.
-     * @param zkpPayload The Zero-Knowledge Proof data associated with the IoT device.
-     * @param dataPayload The IoT device's data.
-     * @param unixtimePayload The Unix timestamp associated with the device data.
-     * @param timestamp The timestamp when the ZKP entry was created.
+     * @param nodeId: The unique identifier of the node associated with the IoT device.
+     * @param deviceId: The unique identifier of the IoT device.
+     * @param deviceType: The type of the IoT device.
+     * @param deviceIdType: The type of the device ID.
+     * @param deviceModel: The model of the IoT device.
+     * @param manufacturer: The manufacturer of the IoT device.
+     * @param softwareVersion: The software/firmware version of the IoT device.
+     * @param zkpPayload: The Zero-Knowledge Proof data associated with the IoT device.
+     * @param dataPayload: The IoT device's data.
+     * @param unixtimePayload: The Unix timestamp associated with the device data.
+     * @param timestamp: The timestamp when the ZKP entry was created.
      */
     function storeZKP(
     string memory commitmentID,
