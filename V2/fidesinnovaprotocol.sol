@@ -308,7 +308,7 @@ contract ServiceManagement is DeviceManagement {
      * @param devices List of associated device IDs.
      * @param installationPrice Cost of installing the service.
      * @param executionPrice Cost of executing the service.
-     * @param imageURL URL linking to the service image.
+     * @param imageUrl URL linking to the service image.
      * @param program Program code defining the service logic.
      * @param creationDate Timestamp marking the service creation.
      * @param publishedDate Timestamp marking when the service was published.
@@ -322,7 +322,7 @@ contract ServiceManagement is DeviceManagement {
         string devices;
         string installationPrice;
         string executionPrice;
-        string imageURL;
+        string imageUrl;
         string program;
         string creationDate;
         string publishedDate;
@@ -367,7 +367,7 @@ contract ServiceManagement is DeviceManagement {
      * @param devices List of associated device IDs.
      * @param installationPrice Cost of installing the service.
      * @param executionPrice Cost of executing the service.
-     * @param imageURL URL linking to the service image.
+     * @param imageUrl URL linking to the service image.
      * @param program Program code defining the service logic.
      * @param creationDate Timestamp marking the service creation.
      * @param publishedDate Timestamp marking when the service was published.
@@ -382,7 +382,7 @@ contract ServiceManagement is DeviceManagement {
         string memory devices,
         string memory installationPrice,
         string memory executionPrice,
-        string memory imageURL,
+        string memory imageUrl,
         string memory program,
         string memory creationDate,
         string memory publishedDate
@@ -401,7 +401,7 @@ contract ServiceManagement is DeviceManagement {
             devices,
             installationPrice,
             executionPrice,
-            imageURL,
+            imageUrl,
             program,
             creationDate,
             publishedDate
@@ -472,7 +472,7 @@ contract ServiceManagement is DeviceManagement {
 contract CommitmentStorage {
     /**
      * @dev Struct to store commitment details.
-     * @param commitmentID Unique identifier for the commitment.
+     * @param commitmentId Unique identifier for the commitment.
      * @param nodeId Unique identifier of the node where the commitment is registered.
      * @param deviceType Type of the IoT device (e.g., 'Sensor', 'Actuator').
      * @param deviceIdType Type of the device identifier (e.g., 'MAC', 'VIN').
@@ -483,7 +483,7 @@ contract CommitmentStorage {
      * @param timestamp Timestamp when the commitment was stored.
      */
     struct Commitment {
-        string commitmentID;
+        string commitmentId;
         string nodeId;
         string deviceType;
         string deviceIdType;
@@ -498,13 +498,13 @@ contract CommitmentStorage {
     Commitment[] public commitments;
 
     // Mapping to check if a commitment ID already exists
-    mapping(string => bool) public commitmentIDs;
+    mapping(string => bool) public commitmentIds;
 
     /**
      * @dev Event emitted when a commitment is successfully stored.
      */
     event CommitmentStored(
-        string commitmentID,
+        string commitmentId,
         string nodeId,
         string deviceType,
         string deviceIdType,
@@ -518,11 +518,11 @@ contract CommitmentStorage {
     /**
      * @dev Event emitted when a commitment is successfully removed.
      */
-    event CommitmentRemoved(string commitmentID, string nodeId, uint256 timestamp);
+    event CommitmentRemoved(string commitmentId, string nodeId, uint256 timestamp);
 
     /**
      * @notice Store a commitment for an IoT device.
-     * @param commitmentID Unique identifier for the commitment.
+     * @param commitmentId Unique identifier for the commitment.
      * @param nodeId Node ID where the commitment is registered.
      * @param deviceType Type of the IoT device.
      * @param deviceIdType Type of the device identifier.
@@ -534,7 +534,7 @@ contract CommitmentStorage {
      * @return bool Returns true if the commitment was successfully stored.
      */
     function storeCommitment(
-        string memory commitmentID,
+        string memory commitmentId,
         string memory nodeId,
         string memory deviceType,
         string memory deviceIdType,
@@ -544,10 +544,10 @@ contract CommitmentStorage {
         string memory commitment,
         uint256 timestamp
     ) public returns (bool) {
-        require(!commitmentIDs[commitmentID], "CommitmentID already registered");
+        require(!commitmentIds[commitmentId], "commitmentId already registered");
 
         commitments.push(Commitment({
-            commitmentID: commitmentID,
+            commitmentId: commitmentId,
             nodeId: nodeId,
             deviceType: deviceType,
             deviceIdType: deviceIdType,
@@ -558,10 +558,10 @@ contract CommitmentStorage {
             timestamp: block.timestamp
         }));
 
-        commitmentIDs[commitmentID] = true;
+        commitmentIds[commitmentId] = true;
 
         emit CommitmentStored(
-            commitmentID, nodeId, deviceType, deviceIdType, 
+            commitmentId, nodeId, deviceType, deviceIdType, 
             deviceModel, manufacturer, softwareVersion, commitment, timestamp
         );
         return true;
@@ -569,12 +569,12 @@ contract CommitmentStorage {
 
     /**
      * @notice Retrieve commitment data based on the commitment ID and node ID.
-     * @param commitmentID Unique identifier of the commitment.
+     * @param commitmentId Unique identifier of the commitment.
      * @param nodeId Node ID where the commitment is registered.
      * @return All stored details of the commitment.
      */
     function getCommitment(
-        string memory commitmentID, 
+        string memory commitmentId, 
         string memory nodeId
     ) public view returns (
         string memory, string memory, string memory, string memory, string memory, 
@@ -582,12 +582,12 @@ contract CommitmentStorage {
     ) {
         for (uint256 i = 0; i < commitments.length; i++) {
             if (
-                keccak256(abi.encodePacked(commitments[i].commitmentID)) == keccak256(abi.encodePacked(commitmentID)) &&
+                keccak256(abi.encodePacked(commitments[i].commitmentId)) == keccak256(abi.encodePacked(commitmentId)) &&
                 keccak256(abi.encodePacked(commitments[i].nodeId)) == keccak256(abi.encodePacked(nodeId))
             ) {
                 Commitment storage commitment = commitments[i];
                 return (
-                    commitment.commitmentID, commitment.nodeId, commitment.deviceType, 
+                    commitment.commitmentId, commitment.nodeId, commitment.deviceType, 
                     commitment.deviceIdType, commitment.deviceModel, commitment.manufacturer, 
                     commitment.softwareVersion, commitment.commitment, commitment.timestamp
                 );
@@ -598,19 +598,19 @@ contract CommitmentStorage {
 
     /**
      * @notice Remove a commitment based on the commitment ID and node ID.
-     * @param commitmentID Unique identifier of the commitment to remove.
+     * @param commitmentId Unique identifier of the commitment to remove.
      * @param nodeId Node ID associated with the commitment.
      */
-    function removeCommitment(string memory commitmentID, string memory nodeId) public {
+    function removeCommitment(string memory commitmentId, string memory nodeId) public {
         for (uint256 i = 0; i < commitments.length; i++) {
             if (
-                keccak256(abi.encodePacked(commitments[i].commitmentID)) == keccak256(abi.encodePacked(commitmentID)) &&
+                keccak256(abi.encodePacked(commitments[i].commitmentId)) == keccak256(abi.encodePacked(commitmentId)) &&
                 keccak256(abi.encodePacked(commitments[i].nodeId)) == keccak256(abi.encodePacked(nodeId))
             ) {
                 commitments[i] = commitments[commitments.length - 1];
                 commitments.pop();
-                commitmentIDs[commitmentID] = false;
-                emit CommitmentRemoved(commitmentID, nodeId, block.timestamp);
+                commitmentIds[commitmentId] = false;
+                emit CommitmentRemoved(commitmentId, nodeId, block.timestamp);
                 return;
             }
         }
@@ -642,18 +642,33 @@ contract CommitmentStorage {
  * @dev A smart contract for storing and retrieving Zero-Knowledge Proof (ZKP) data related to IoT devices.
  */
 contract ZKPStorage {
+
+     /**
+     * @dev Emitted when a new commitment is stored.
+     * @param commitmentID The unique identifier for the commitment.
+     * @param nodeId The ID of the node associated with the commitment.
+     * @param deviceType The type of the IoT device (e.g., sensor, actuator).
+     * @param deviceIdType The type of the device ID (e.g., 'MAC', 'VIN').
+     * @param deviceModel The model of the IoT device.
+     * @param manufacturer The name of the manufacturer of the IoT device.
+     * @param softwareVersion The software or firmware version of the IoT device.
+     * @param commitment The commitment data, as described in the commitment file on the project GitHub.
+     * @param timestamp The timestamp when the commitment was stored.
+     */
+
+
     struct ZKP {
-        string nodeId;            // Unique identifier of the node
-        string deviceId;          // Unique identifier of the IoT device
-        string deviceType;        // Type of the IoT device (e.g., 'Sensor', 'Actuator')
-        string deviceIdType;      // Type of the device ID (e.g., 'MAC', 'VIN')
-        string deviceModel;       // Model of the IoT device
-        string manufacturer;      // Manufacturer of the IoT device
-        string softwareVersion;   // Software/firmware version of the IoT device
-        bytes zkpPayload;         // The Zero-Knowledge Proof data associated with the IoT device
-        string dataPayload;       // The IoT device's data
-        string unixtimePayload;   // The Unix timestamp associated with the device data
-        uint256 timestamp;        // Timestamp of the entry creation
+
+    string commitmentID,
+    string nodeId,
+    string deviceType,
+    string deviceIdType,
+    string deviceModel,
+    string manufacturer,
+    string softwareVersion,
+    string commitment,
+    uint256 timestamp
+
     }
 
     ZKP[] public zkps;
@@ -673,17 +688,15 @@ contract ZKPStorage {
      * @param timestamp The timestamp when the ZKP entry was created.
      */
     event ZKPStored(
-        string nodeId,
-        string deviceId,
-        string deviceType,
-        string deviceIdType,
-        string deviceModel,
-        string manufacturer,
-        string softwareVersion,
-        bytes zkpPayload,
-        string dataPayload,
-        string unixtimePayload,
-        uint256 timestamp
+    string commitmentID,
+    string nodeId,
+    string deviceType,
+    string deviceIdType,
+    string deviceModel,
+    string manufacturer,
+    string softwareVersion,
+    string commitment,
+    uint256 timestamp
     );
 
     /**
@@ -701,44 +714,38 @@ contract ZKPStorage {
      * @param timestamp The timestamp when the ZKP entry was created.
      */
     function storeZKP(
-        string memory nodeId,
-        string memory deviceId,
-        string memory deviceType,
-        string memory deviceIdType,
-        string memory deviceModel,
-        string memory manufacturer,
-        string memory softwareVersion,
-        bytes memory zkpPayload,
-        string memory dataPayload,
-        string memory unixtimePayload,
-        uint256 timestamp
+    string memory commitmentID,
+    string memory nodeId,
+    string memory deviceType,
+    string memory deviceIdType,
+    string memory deviceModel,
+    string memory manufacturer,
+    string memory softwareVersion,
+    string memory commitment,
+    uint256 timestamp
     ) public {
         zkps.push(ZKP({
-            nodeId: nodeId,
-            deviceId: deviceId,
-            deviceType: deviceType,
-            deviceIdType: deviceIdType,
-            deviceModel: deviceModel,
-            manufacturer: manufacturer,
-            softwareVersion: softwareVersion,
-            zkpPayload: zkpPayload,
-            dataPayload: dataPayload,
-            unixtimePayload: unixtimePayload,
-            timestamp: timestamp
+    commitmentID: commitmentID,  
+    nodeId: nodeId,  
+    deviceType: deviceType,  
+    deviceIdType: deviceIdType,  
+    deviceModel: deviceModel,  
+    manufacturer: manufacturer,  
+    softwareVersion: softwareVersion,  
+    commitment: commitment,  
+    timestamp: timestamp
         }));
 
         emit ZKPStored(
-            nodeId,
-            deviceId,
-            deviceType,
-            deviceIdType,
-            deviceModel,
-            manufacturer,
-            softwareVersion,
-            zkpPayload,
-            dataPayload,
-            unixtimePayload,
-            timestamp
+    commitmentID,  
+    nodeId,  
+    deviceType,  
+    deviceIdType,  
+    deviceModel,  
+    manufacturer,  
+    softwareVersion,  
+    commitment,  
+    timestamp
         );
     }
 
@@ -766,33 +773,29 @@ contract ZKPStorage {
      * @return timestamp The timestamp when the ZKP entry was created.
      */
     function getZKP(uint256 index) public view returns (
-        string memory nodeId,
-        string memory deviceId,
-        string memory deviceType,
-        string memory deviceIdType,
-        string memory deviceModel,
-        string memory manufacturer,
-        string memory softwareVersion,
-        bytes memory zkpPayload,
-        string memory dataPayload,
-        string memory unixtimePayload,
-        uint256 timestamp
+    string memory commitmentID,
+    string memory nodeId,
+    string memory deviceType,
+    string memory deviceIdType,
+    string memory deviceModel,
+    string memory manufacturer,
+    string memory softwareVersion,
+    string memory commitment,
+    uint256 timestamp
     ) {
         require(index < zkps.length, "Index out of bounds");
 
         ZKP storage zkp = zkps[index];
         return (
-            zkp.nodeId,
-            zkp.deviceId,
-            zkp.deviceType,
-            zkp.deviceIdType,
-            zkp.deviceModel,
-            zkp.manufacturer,
-            zkp.softwareVersion,
-            zkp.zkpPayload,
-            zkp.dataPayload,
-            zkp.unixtimePayload,
-            zkp.timestamp
+          zkp.commitmentID,  
+          zkp.nodeId,  
+          zkp.deviceType,  
+          zkp.deviceIdType,  
+          zkp.deviceModel,  
+          zkp.manufacturer,  
+          zkp.softwareVersion,  
+          zkp.commitment,  
+          zkp.timestamp
         );
     }
 }
