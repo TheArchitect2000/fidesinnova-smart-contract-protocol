@@ -627,7 +627,7 @@ contract CommitmentStorage {
     }
 
     /**
-     * @notice Retrieve all stored commitments. (Function implementation is required)
+     * @notice Retrieve all stored commitments.
      * @dev This function should return an array contains all the commitments.
      */
     function getAllCommitmentsData() public view returns (Commitment[] memory) {
@@ -751,8 +751,8 @@ contract ZKPStorage {
     }
 
     /**
-     * @dev Retrieves the total number of ZKP entries stored.
-     * @return The total number of ZKP entries stored in the contract.
+     * @dev Retrieves the total number of ZKPs stored in the contract.
+     * @return The total number of ZKPs stored in the contract.
      */
     function getZKPCount() public view returns (uint256) {
         return zkps.length;
@@ -760,7 +760,7 @@ contract ZKPStorage {
 
     /**
      * @dev Retrieves the ZKP data for an IoT device based on the provided index.
-     * @param index The index of the ZKP data entry in the array to retrieve.
+     * @param index: The index of the ZKP data entry in the array to retrieve.
      * @return nodeId The unique identifier of the node.
      * @return deviceId The unique identifier of the IoT device.
      * @return deviceType The type of the IoT device.
@@ -805,7 +805,7 @@ contract ZKPStorage {
 
 /**
  * @title SignIdentity
- * @dev A smart contract for registering and managing identities with ownership binding.
+ * @dev A smart contract for registering and managing identities with ownerships binding.
  *      - A user can register an identity associated with a unique node ID.
  *      - Ownership can be assigned to a registered identity.
  *      - The identity and ownership can be bound together once both are registered.
@@ -828,7 +828,7 @@ contract SignIdentity {
 
     /**
      * @dev Registers a new identity if it does not already exist.
-     * @param _nodeId The node ID associated with this identity.
+     * @param _nodeId: The node ID associated with this identity.
      */
     function registerIdentity(uint256 _nodeId) public {
         require(identities[msg.sender].identityAddress == address(0), "Identity already registered");
@@ -848,7 +848,7 @@ contract SignIdentity {
 
     /**
      * @dev Registers an ownership address for an existing identity.
-     * @param _identityAddress The identity address for which ownership is being assigned.
+     * @param _identityAddress: The identity address for which ownership is being assigned.
      */
     function registerOwnership(address _identityAddress) public {
         require(identities[_identityAddress].identityAddress != address(0), "Identity does not exist");
@@ -861,7 +861,7 @@ contract SignIdentity {
 
     /**
      * @dev Binds identity and ownership if both addresses match the stored identity.
-     * @param _ownershipAddress The ownership address to bind with the identity.
+     * @param _ownershipAddress: The ownership address to bind with the identity.
      */
     function bindIdentityOwnership(address _ownershipAddress) public {
         Identity storage identity = identities[msg.sender];
