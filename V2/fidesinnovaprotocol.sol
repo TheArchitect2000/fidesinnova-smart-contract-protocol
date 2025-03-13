@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/utils/Context.sol";
 
 
 
-/**
+/*************************************************************
  * @title AccessManagers
  * @dev A smart contract to manager the node managers of different nodes in the network.
  *      - Allows the smart contract owner to add or remove node managers of nodes.
@@ -120,7 +120,7 @@ contract AccessManagers is Ownable {
 
 
 
-/**
+/*************************************************************
  * @title DeviceManagement
  * @dev A smart contract for managing IoT devices within a node.
  *      - Allows the node manager to create, remove, and fetch IoT devices.
@@ -166,18 +166,18 @@ contract DeviceManagement is AccessManagers {
      *      - Stores the device’s details, including ID, type, model, manufacturer, parameters, cost, etc.
      *      - Emits a `DeviceCreated` event.
      * 
-     * @param nodeId: The unique identifier of the node to which the device will be registered.
-     * @param deviceId: The unique identifier of the device (e.g., MAC address, VIN).
-     * @param deviceType: The type of the device (e.g., "Car", "Sensor").
-     * @param deviceIdType: The type of the device ID (e.g., "MAC", "VIN").
-     * @param deviceModel: The model of the device (e.g., "zkMultiSensor", "ECard").
-     * @param manufacturer: The manufacturer of the device (e.g., "Simense", "Tesla").
-     * @param parameters: The device parameters (e.g., ["temperature", "humidity"]).
-     * @param useCost: The cost of using the device (e.g., "23").
-     * @param deviceCoordination: The GPS coordinates of the device (e.g., [23.4, 45.6]).
-     * @param ownernershipId: The digital ownership ID of the device (e.g., wallet address).
-     * @param sharedTimestamp: The timestamp indicating when the device was shared.
-     * @param softwareVersion: The software/firmware version of the device (e.g., "1.0.0").
+     * @param nodeId Unique ID for the node to which the device is registered
+     * @param deviceId Unique ID for the device (e.g., MAC address, VIN number)
+     * @param deviceType Type of the device (e.g., Car, Sensor)
+     * @param deviceIdType Type of the device ID (e.g., 'MAC', 'VIN')
+     * @param deviceModel Model of the device (e.g., 'zkMultiSensor', 'ECard')
+     * @param manufacturer Manufacturer of the device (e.g., 'Simense', 'Tesla')
+     * @param parameters Parameters of the device (e.g., ['temperature', 'humidity'])
+     * @param useCost Cost of using the device (e.g., '23') FDS token
+     * @param deviceCoordination GPS coordinates of the device (e.g., [23.4, 45.6])
+     * @param ownernershipId Digital ownership ID of the device (e.g., wallet address)
+     * @param sharedTimestamp Timestamp when the device was shared
+     * @param softwareVersion Software/firmware version of the device (e.g., '1.0.0')
      * 
      * @return uint256 The unique database ID assigned to the newly created device.
      */
@@ -292,7 +292,7 @@ contract DeviceManagement is AccessManagers {
 
 
 
-/**
+/*************************************************************
  * @title ServiceManagement
  * @dev This contract manages the creation, removal, and Fetching of IoT services associated with specific nodes.
  * Each service has a unique ID within a node and contains metadata such as name, description, type, associated devices,
@@ -315,18 +315,18 @@ contract ServiceManagement is DeviceManagement {
      * @param publishedDate: Timestamp marking when the service was published.
      */
     struct Service {
-        string nodeId;
-        string serviceId;
-        string name;
-        string description;
-        string serviceType;
-        string devices;
-        string installationPrice;
-        string executionPrice;
-        string imageUrl;
-        string program;
-        string creationDate;
-        string publishedDate;
+        string nodeId; // Unique identifier of the node the service belongs to
+        string serviceId; // Unique identifier for the service within the node
+        string name; // Name of the service
+        string description;     // Brief description of the service
+        string serviceType; // Type of the service (e.g., 'Automation', 'MachineLearning')
+        string devices; // List of associated device IDs
+        string installationPrice; // Cost of installing the service
+        string executionPrice;  // Cost of executing the service
+        string imageUrl; // URL linking to the service image
+        string program; // Program code defining the service logic
+        string creationDate; // Timestamp marking the service creation
+        string publishedDate; // Timestamp marking when the service was published
     }
 
     /// @dev Error thrown when attempting to create a service with a duplicate service ID within the same node.
@@ -360,18 +360,18 @@ contract ServiceManagement is DeviceManagement {
      * @dev Ensures the service ID is unique within the node before storing service details.
      * Emits a `ServiceCreated` event upon success.
      * 
-     * @param nodeId: Unique identifier of the node.
-     * @param serviceId: Unique identifier for the service within the node.
-     * @param name: Name of the service.
-     * @param description: Description of the service.
-     * @param serviceType: Type of the service (e.g., 'Automation', 'MachineLearning').
-     * @param devices: List of associated device IDs.
-     * @param installationPrice: Cost of installing the service.
-     * @param executionPrice: Cost of executing the service.
-     * @param imageUrl: URL linking to the service image.
-     * @param program: Program code defining the service logic.
-     * @param creationDate: Timestamp marking the service creation.
-     * @param publishedDate: Timestamp marking when the service was published.
+     * @param nodeId The unique identifier of the node to which the service belongs.
+     * @param serviceId The unique identifier for the service within the node.
+     * @param name The name of the service.
+     * @param description A brief description of the service. 
+     * @param serviceType The type of the service.
+     * @param devices list of device IDs
+     * @param installationPrice Cost of installing the service
+     * @param executionPrice Cost of installing the service
+     * @param imageUrl URL linking to the service image
+     * @param program  Program code defining the service logic
+     * @param creationDate Timestamp marking the service creation
+     * @param publishedDate Timestamp marking when the service was published
      * @return uint256 The unique database ID assigned to the newly created service.
      */
     function createService(
@@ -465,7 +465,7 @@ contract ServiceManagement is DeviceManagement {
 
 
 
-/**
+/*************************************************************
  * @title CommitmentStorage
  * @dev This contract allows storing, retrieving, and removing commitments for IoT devices.
  * Commitments contain various metadata including device details, commitment data, timestamps, etc.
@@ -473,7 +473,7 @@ contract ServiceManagement is DeviceManagement {
 contract CommitmentStorage {
     /**
      * @dev Struct to store commitment details.
-     * @param commitmentId:Unique identifier for the commitment.
+     * @param commitmentId: Unique identifier for the commitment.
      * @param nodeId: Unique identifier of the node where the commitment is registered.
      * @param deviceType: Type of the IoT device (e.g., 'Sensor', 'Actuator').
      * @param deviceIdType: Type of the device identifier (e.g., 'MAC', 'VIN').
@@ -523,15 +523,15 @@ contract CommitmentStorage {
 
     /**
      * @notice Store a commitment for an IoT device.
-     * @param commitmentId: Unique identifier for the commitment.
-     * @param nodeId: Node ID where the commitment is registered.
-     * @param deviceType: Type of the IoT device.
-     * @param deviceIdType: Type of the device identifier.
-     * @param deviceModel: Model of the IoT device.
-     * @param manufacturer: Manufacturer name of the IoT device.
-     * @param softwareVersion: Software or firmware version.
-     * @param commitment: The commitment data.
-     * @param timestamp: Timestamp of the commitment.
+     * @param commitmentId  Unique identifier for the commitment. 
+     * @param nodeId Unique identifier of the node where the commitment is registered.
+     * @param deviceType Type of the IoT device (e.g., 'Sensor', 'Actuator').
+     * @param deviceIdType Type of the device identifier (e.g., 'MAC', 'VIN').
+     * @param deviceModel Model of the IoT device.
+     * @param manufacturer Manufacturer of the IoT device.
+     * @param softwareVersion Software or firmware version of the device.
+     * @param commitment Actual commitment data adhering to a certain specification.
+     * @param timestamp Timestamp when the commitment was stored.
      * @return bool Returns true if the commitment was successfully stored.
      */
     function storeCommitment(
@@ -638,114 +638,74 @@ contract CommitmentStorage {
 
 
 
-/**
+/*************************************************************
  * @title ZKPStorage
  * @dev A smart contract for storing and retrieving Zero-Knowledge Proof (ZKP) data related to IoT devices.
  */
 contract ZKPStorage {
 
      /**
-     * @dev Emitted when a new commitment is stored.
-     * @param commitmentID The unique identifier for the commitment.
+     * @dev Struct to store ZKP details.
      * @param nodeId The ID of the node associated with the commitment.
-     * @param deviceType The type of the IoT device (e.g., sensor, actuator).
-     * @param deviceIdType The type of the device ID (e.g., 'MAC', 'VIN').
-     * @param deviceModel The model of the IoT device.
-     * @param manufacturer The name of the manufacturer of the IoT device.
-     * @param softwareVersion The software or firmware version of the IoT device.
-     * @param commitment The commitment data, as described in the commitment file on the project GitHub.
+     * @param deviceId The ID of the IoT device associated with the commitment.
+     * @param zkpPayload The Zero-Knowledge Proof data associated with the commitment.
+     * @param dataPayload The IoT device's data associated with the zkpPayload.
      * @param timestamp The timestamp when the commitment was stored.
      */
-
-
     struct ZKP {
-
-    string commitmentID,
-    string nodeId,
-    string deviceType,
-    string deviceIdType,
-    string deviceModel,
-    string manufacturer,
-    string softwareVersion,
-    string commitment,
-    uint256 timestamp
-
+    string nodeId;
+    string deviceId;
+    string zkpPayload;
+    string dataPayload;
+    uint256 timestamp;
     }
 
     ZKP[] public zkps;
 
     /**
      * @dev Emitted when a new ZKP is stored.
-     * @param nodeId: The unique identifier of the node.
-     * @param deviceId: The unique identifier of the IoT device.
-     * @param deviceType: The type of the IoT device.
-     * @param deviceIdType: The type of the device ID.
-     * @param deviceModel: The model of the IoT device.
-     * @param manufacturer: The manufacturer of the IoT device.
-     * @param softwareVersion: The software/firmware version of the IoT device.
-     * @param zkpPayload: The ZKP data associated with the IoT device.
-     * @param dataPayload: The IoT device's data.
-     * @param unixtimePayload: The Unix timestamp associated with the device data.
-     * @param timestamp: The timestamp when the ZKP entry was created.
+     * @param nodeId The unique identifier of the node.
+     * @param deviceId The unique identifier of the IoT device.
+     * @param zkpPayload The unique identifier of the IoT device.
+     * @param dataPayload The IoT device's data.
+     * @param timestamp The timestamp when the ZKP entry was created.
      */
     event ZKPStored(
-    string commitmentID,
     string nodeId,
-    string deviceType,
-    string deviceIdType,
-    string deviceModel,
-    string manufacturer,
-    string softwareVersion,
-    string commitment,
+    string deviceId,
+    string zkpPayload,
+    string dataPayload,
     uint256 timestamp
     );
 
     /**
      * @dev Stores the ZKP data for an IoT device.
-     * @param nodeId: The unique identifier of the node associated with the IoT device.
-     * @param deviceId: The unique identifier of the IoT device.
-     * @param deviceType: The type of the IoT device.
-     * @param deviceIdType: The type of the device ID.
-     * @param deviceModel: The model of the IoT device.
-     * @param manufacturer: The manufacturer of the IoT device.
-     * @param softwareVersion: The software/firmware version of the IoT device.
+     * @param nodeId The unique identifier of the node.
+     * @param deviceId The unique identifier of the IoT device.
      * @param zkpPayload: The Zero-Knowledge Proof data associated with the IoT device.
      * @param dataPayload: The IoT device's data.
-     * @param unixtimePayload: The Unix timestamp associated with the device data.
      * @param timestamp: The timestamp when the ZKP entry was created.
      */
     function storeZKP(
-    string memory commitmentID,
     string memory nodeId,
-    string memory deviceType,
-    string memory deviceIdType,
-    string memory deviceModel,
-    string memory manufacturer,
-    string memory softwareVersion,
-    string memory commitment,
+    string memory deviceId,
+    string memory zkpPayload,
+    string memory dataPayload,
     uint256 timestamp
     ) public {
         zkps.push(ZKP({
-    commitmentID: commitmentID,  
-    nodeId: nodeId,  
-    deviceType: deviceType,  
-    deviceIdType: deviceIdType,  
-    deviceModel: deviceModel,  
-    manufacturer: manufacturer,  
-    softwareVersion: softwareVersion,  
-    commitment: commitment,  
+    nodeId: nodeId,   
+    deviceId: deviceId,  
+    zkpPayload: zkpPayload,  
+    dataPayload: dataPayload,  
     timestamp: timestamp
         }));
 
         emit ZKPStored(
-    commitmentID,  
-    nodeId,  
-    deviceType,  
-    deviceIdType,  
-    deviceModel,  
-    manufacturer,  
-    softwareVersion,  
-    commitment,  
+    nodeId,   
+    deviceId,  
+    zkpPayload,  
+    dataPayload,  
     timestamp
         );
     }
@@ -758,52 +718,37 @@ contract ZKPStorage {
         return zkps.length;
     }
 
-    /**
+    /*
      * @dev Retrieves the ZKP data for an IoT device based on the provided index.
      * @param index: The index of the ZKP data entry in the array to retrieve.
-     * @return nodeId The unique identifier of the node.
-     * @return deviceId The unique identifier of the IoT device.
-     * @return deviceType The type of the IoT device.
-     * @return deviceIdType The type of the device ID.
-     * @return deviceModel The model of the IoT device.
-     * @return manufacturer The manufacturer of the IoT device.
-     * @return softwareVersion The software/firmware version of the IoT device.
-     * @return zkpPayload The Zero-Knowledge Proof data associated with the IoT device.
-     * @return dataPayload The IoT device's data.
-     * @return unixtimePayload The Unix timestamp associated with the device data.
-     * @return timestamp The timestamp when the ZKP entry was created.
+     * @return deviceId 
+     * @return zkpPayload 
+     * @return dataPayload 
+     * @return timestamp 
      */
     function getZKP(uint256 index) public view returns (
-    string memory commitmentID,
-    string memory nodeId,
-    string memory deviceType,
-    string memory deviceIdType,
-    string memory deviceModel,
-    string memory manufacturer,
-    string memory softwareVersion,
-    string memory commitment,
-    uint256 timestamp
+        string memory nodeId,
+        string memory deviceId,
+        string memory zkpPayload,
+        string memory dataPayload,
+        uint256 timestamp
     ) {
         require(index < zkps.length, "Index out of bounds");
 
         ZKP storage zkp = zkps[index];
         return (
-          zkp.commitmentID,  
-          zkp.nodeId,  
-          zkp.deviceType,  
-          zkp.deviceIdType,  
-          zkp.deviceModel,  
-          zkp.manufacturer,  
-          zkp.softwareVersion,  
-          zkp.commitment,  
-          zkp.timestamp
+             nodeId,
+            deviceId,
+            zkpPayload,
+            dataPayload,
+             timestamp
         );
     }
 }
 
 
 
-/**
+/*************************************************************
  * @title SignIdentity
  * @dev A smart contract for registering and managing identities with ownerships binding.
  *      - A user can register an identity associated with a unique node ID.
@@ -877,7 +822,7 @@ contract SignIdentity {
 }
 
 
-/**
+/*************************************************************
  * @title DeviceNFT
  * @dev A smart contract to create and transfer NFTs representing IoT devices.
  *      - Ensures that each device (defined by deviceId, deviceIdType, deviceType, manufacturer, and deviceModel) is unique.
@@ -960,9 +905,11 @@ contract DeviceNFT {
 
 
 
-//
-// the main contract which inherits from the other contracts.
-//
+// //////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////
+// The main contract which inherits from the other contracts.
+// /////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////
 contract Protocol is ServiceManagement, CommitmentStorage, ZKPStorage {
     constructor(address initialOwner)
         ServiceManagement(initialOwner)
