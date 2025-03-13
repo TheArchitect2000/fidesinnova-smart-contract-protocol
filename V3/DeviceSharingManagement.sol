@@ -5,7 +5,7 @@ pragma solidity 0.8.20;
 
 /*************************************************************
  * @title DeviceManagement
- * @dev A smart contract for managing IoT devices within a node.
+ * @dev A smart contract for share/unshare accessing IoT devices.
  *      - Allows the node manager to create, remove, and fetch IoT devices.
  *      - Ensures that IoT devices have unique IDs within the node and prevents duplication.
  *      - Provides functionality to store IoT device details, such as type, model, manufacturer, parameters, ownership, etc.

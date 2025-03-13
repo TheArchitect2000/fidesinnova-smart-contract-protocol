@@ -5,7 +5,7 @@ pragma solidity 0.8.20;
 
 /*************************************************************
  * @title CommitmentStorage
- * @dev This contract allows storing, retrieving, and removing commitments for IoT devices.
+ * @dev This contract allows storing, retrieving, and removing commitments on the blockchain.
  * Commitments contain various metadata including device details, commitment data, timestamps, etc.
  */
 contract CommitmentStorage {
@@ -83,7 +83,7 @@ contract CommitmentStorage {
         string memory commitment,
         uint256 timestamp
     ) public returns (bool) {
-        require(!commitmentIds[commitmentId], "commitmentId already registered");
+        require(!commitmentIds[commitmentId], "commitmentId already registered.");
 
         commitments.push(Commitment({
             commitmentId: commitmentId,

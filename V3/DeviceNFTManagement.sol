@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.20;
 
-
 /*************************************************************
  * @title DeviceNFT
  * @dev A smart contract to create and transfer NFTs representing IoT devices.
@@ -46,7 +45,7 @@ contract DeviceNFT {
         string memory deviceModel
     ) public {
         bytes32 deviceHash = keccak256(abi.encode(deviceId, deviceIdType, deviceType, manufacturer, deviceModel));
-        require(!deviceExists[deviceHash], "Device already exists");
+        require(!deviceExists[deviceHash], "Device already exists.");
 
         devices[nextNFTId] = Device({
             deviceId: deviceId,
@@ -72,9 +71,9 @@ contract DeviceNFT {
      * @param receiverOwnershipAddress The address of the new owner.
      */
     function transferNFT(uint256 nftId, address receiverOwnershipAddress) public {
-        require(nftId < nextNFTId, "NFT does not exist");
-        require(msg.sender == devices[nftId].ownershipAddress, "Only the owner can transfer this NFT");
-        require(receiverOwnershipAddress != address(0), "Invalid new owner address");
+        require(nftId < nextNFTId, "NFT does not exist.");
+        require(msg.sender == devices[nftId].ownershipAddress, "Only the owner can transfer this NFT.");
+        require(receiverOwnershipAddress != address(0), "Invalid new owner address.");
 
         address previousOwner = devices[nftId].ownershipAddress;
         devices[nftId].ownershipAddress = receiverOwnershipAddress;

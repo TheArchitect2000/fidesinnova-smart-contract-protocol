@@ -4,7 +4,7 @@ pragma solidity 0.8.20;
 
 /*************************************************************
  * @title ServiceManagement
- * @dev This contract manages the creation, removal, and Fetching of IoT services associated with specific nodes.
+ * @dev This contract manages the creation, removal, and fetching of IoT services associated with specific nodes.
  * Each service has a unique ID within a node and contains metadata such as name, description, type, associated devices,
  * pricing information, image URL, and timestamps for creation and publication, etc.
  */

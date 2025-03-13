@@ -4,14 +4,14 @@ pragma solidity 0.8.20;
 
 
 /*************************************************************
- * @title SignIdentity
+ * @title IdentityOwnershipRegisteration
  * @dev A smart contract for registering and managing identities with ownerships binding.
  *      - A user can register an identity associated with a unique node ID.
  *      - Ownership can be assigned to a registered identity.
  *      - The identity and ownership can be bound together once both are registered.
  */
 
-contract SignIdentity {
+contract IdentityOwnershipRegisteration {
     struct Identity {
         address identityAddress;  // Identity address
         address ownershipAddress; // Ownership address
@@ -31,8 +31,8 @@ contract SignIdentity {
      * @param _nodeId: The node ID associated with this identity.
      */
     function registerIdentity(uint256 _nodeId) public {
-        require(identities[msg.sender].identityAddress == address(0), "Identity already registered");
-        require(!nodeExists[_nodeId], "Node ID already registered");
+        require(identities[msg.sender].identityAddress == address(0), "Identity already registered.");
+        require(!nodeExists[_nodeId], "Node ID already registered.");
 
         identities[msg.sender] = Identity({
             identityAddress: msg.sender,
@@ -51,8 +51,8 @@ contract SignIdentity {
      * @param _identityAddress: The identity address for which ownership is being assigned.
      */
     function registerOwnership(address _identityAddress) public {
-        require(identities[_identityAddress].identityAddress != address(0), "Identity does not exist");
-        require(identities[_identityAddress].ownershipAddress == address(0), "Ownership already registered");
+        require(identities[_identityAddress].identityAddress != address(0), "Identity does not exist.");
+        require(identities[_identityAddress].ownershipAddress == address(0), "Ownership already registered.");
 
         identities[_identityAddress].ownershipAddress = msg.sender;
 
@@ -66,9 +66,9 @@ contract SignIdentity {
     function bindIdentityOwnership(address _ownershipAddress) public {
         Identity storage identity = identities[msg.sender];
 
-        require(identity.identityAddress != address(0), "Identity does not exist");
-        require(identity.ownershipAddress == _ownershipAddress, "Ownership address mismatch");
-        require(!identity.binding, "Already bound");
+        require(identity.identityAddress != address(0), "Identity does not exist.");
+        require(identity.ownershipAddress == _ownershipAddress, "Ownership address mismatch.");
+        require(!identity.binding, "Already bound.");
 
         identity.binding = true;
 

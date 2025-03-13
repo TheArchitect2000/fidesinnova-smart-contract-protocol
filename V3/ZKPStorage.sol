@@ -3,7 +3,7 @@ pragma solidity 0.8.20;
 
 /*************************************************************
  * @title ZKPStorage
- * @dev A smart contract for storing and retrieving Zero-Knowledge Proof (ZKP) data related to IoT devices.
+ * @dev A smart contract for storing and retrieving Zero-Knowledge Proof (ZKP) and IoT device data on the blockchain.
  */
 contract ZKPStorage {
 

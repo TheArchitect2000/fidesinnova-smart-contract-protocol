@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.20;
 
-
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Context.sol";
 
-import "./SignIdentity.sol";
-import "./DeviceNFT.sol";
-import "./DeviceManagement.sol";
+// Import other contracts in FidesInnova protocol
+import "./IdentityOwnershipRegisteration.sol";
+import "./DeviceNFTManagement.sol";
+import "./DeviceSharingManagement.sol";
 import "./ServiceManagement.sol";
 import "./CommitmentStorage.sol";
 import "./ZKPStorage.sol";
@@ -20,10 +20,10 @@ import "./ZKPStorage.sol";
 // //////////////////////////////////////////////////////////
 
 /*************************************************************
- * @title Protocol
- * @dev A master contract to deploy and manage all other contracts in the protocol.
+ * @title FidesInnovaMainProtocol
+ * @dev A master smart contract to deploy and manage all other contracts in the FidesInnova protocol.
  */
-contract Protocol {
+contract FidesInnovaMainProtocol {
     // Addresses of deployed contracts
     address public signIdentityAddress;
     address public deviceNFTAddress;
