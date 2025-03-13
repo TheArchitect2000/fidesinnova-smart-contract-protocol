@@ -1,17 +1,17 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.20;
+pragma solidity 0.8.26;
 
-
+import "./AccessManagers.sol";
 
 /*************************************************************
- * @title DeviceManagement
+ * @title DeviceSharingManagement
  * @dev A smart contract for share/unshare accessing IoT devices.
  *      - Allows the node manager to create, remove, and fetch IoT devices.
  *      - Ensures that IoT devices have unique IDs within the node and prevents duplication.
  *      - Provides functionality to store IoT device details, such as type, model, manufacturer, parameters, ownership, etc.
  *      - Emits events to notify about IoT device creation and removal.
  */
-contract DeviceManagement is AccessManagers {
+contract DeviceSharingManagement is AccessManagers {
     
     struct Device {
         string nodeId;                // Unique ID for the node to which the device is registered

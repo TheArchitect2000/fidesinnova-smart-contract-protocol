@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.20;
+pragma solidity 0.8.26;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Context.sol";
 
@@ -49,17 +48,17 @@ contract FidesInnovaMainProtocol {
         require(msg.sender == owner, "Only the owner can deploy contracts");
 
         // Deploy SignIdentity
-        SignIdentity signIdentity = new SignIdentity();
+        IdentityOwnershipRegisteration signIdentity = new IdentityOwnershipRegisteration();
         signIdentityAddress = address(signIdentity);
         emit ContractDeployed("SignIdentity", signIdentityAddress);
 
         // Deploy DeviceNFT
-        DeviceNFT deviceNFT = new DeviceNFT();
+        DeviceNFTManagement deviceNFT = new DeviceNFTManagement();
         deviceNFTAddress = address(deviceNFT);
         emit ContractDeployed("DeviceNFT", deviceNFTAddress);
 
         // Deploy DeviceManagement
-        DeviceManagement deviceManagement = new DeviceManagement(signIdentityAddress);
+        DeviceSharingManagement deviceManagement = new DeviceSharingManagement(signIdentityAddress);
         deviceManagementAddress = address(deviceManagement);
         emit ContractDeployed("DeviceManagement", deviceManagementAddress);
 
@@ -98,7 +97,7 @@ contract FidesInnovaMainProtocol {
         } else if (keccak256(abi.encodePacked(contractName)) == keccak256(abi.encodePacked("ZKPStorage"))) {
             return zkpStorageAddress;
         } else {
-            revert("Contract not found");
+            revert("Contract not found.");
         }
     }
 }

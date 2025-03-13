@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.20;
+pragma solidity 0.8.26;
 
 /*************************************************************
- * @title DeviceNFT
+ * @title DeviceNFTManagement
  * @dev A smart contract to create and transfer NFTs representing IoT devices.
  *      - Ensures that each device (defined by deviceId, deviceIdType, deviceType, manufacturer, and deviceModel) is unique.
  *      - Provides functionality to transfer ownership of the NFT.
  */
-contract DeviceNFT {
+contract DeviceNFTManagement {
     struct Device {
         string deviceId;        // Unique identifier for the device
         string deviceIdType;    // Type of the device ID (e.g., 'MAC', 'VIN')

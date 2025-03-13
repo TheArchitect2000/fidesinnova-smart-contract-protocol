@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.20;
+pragma solidity 0.8.26;
 
+import "./DeviceSharingManagement.sol";
 
 /*************************************************************
  * @title ServiceManagement
@@ -8,7 +9,7 @@ pragma solidity 0.8.20;
  * Each service has a unique ID within a node and contains metadata such as name, description, type, associated devices,
  * pricing information, image URL, and timestamps for creation and publication, etc.
  */
-contract ServiceManagement is DeviceManagement {
+contract ServiceManagement is DeviceSharingManagement {
     /**
      * @dev Structure representing a service entity.
      * @param nodeId: Unique identifier of the node the service belongs to.
@@ -45,7 +46,7 @@ contract ServiceManagement is DeviceManagement {
     /// @dev Error thrown when trying to remove a service that does not exist.
     error ServiceManagement__ServiceIdNotExist(string nodeId, string serviceId);
 
-    constructor(address initialOwner) DeviceManagement(initialOwner) {}
+    constructor(address initialOwner) DeviceSharingManagement(initialOwner) {}
 
     /// @dev Mapping of service database IDs to service structs.
     mapping(uint256 id => Service service) private s_services;
