@@ -3,9 +3,10 @@ pragma solidity 0.8.26;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 
+
 /*************************************************************
  * @title NodeManagers
- * @dev A smart contract to manager the node managers of different nodes in the network.
+ * @dev A smart contract to manage the node managers of different nodes in the network.
  *      - Allows the smart contract owner to add or remove node managers of nodes.
  *      - Ensures that only node managers can perform certain actions within the network.
  *      - Provides functionality to check if an address is a node manager and retrieve the nodeId associated with it.
@@ -13,6 +14,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract NodeManagers is Ownable {
     mapping(address => bool) private isManager; // Tracks whether an address is a node manager
     mapping(address => string) private managerNodeId; // Maps each node manager's address to a specific nodeId
+    address[] private managerList; // List of all node managers
 
     // Custom errors to revert transactions with detailed messages.
     error NodeManagers__IsNotManager(address account);
@@ -25,7 +27,7 @@ contract NodeManagers is Ownable {
 
     /**
      * @dev Constructor to initialize the smart contract with the smart contract owner who is the caller of this contract for the first time..
-     *      - Inherits from Ownable to ensure only the samrt contract owner can execute certain functions.
+     *      - Inherits from Ownable to ensure only the smart contract owner can execute certain functions.
      * 
      * @param initialOwner is the address of the smart contract owner who called this contract for the first time.
      */
@@ -79,6 +81,7 @@ contract NodeManagers is Ownable {
         }
         isManager[account] = true;
         managerNodeId[account] = nodeId;
+        managerList.push(account); // Add the address to the list of managers
 
         emit ManagerAdded(account, nodeId);
     }
@@ -87,7 +90,7 @@ contract NodeManagers is Ownable {
      * @dev Allows the smart contract owner to remove a node manager from the network.
      *      - Reverts if the address is not a node manager.
      * 
-     * @param account is The address of the nodemanager to be removed.
+     * @param account is The address of the node manager to be removed.
      */
     function removeManager(address account) external onlyOwner {
         if (!isManager[account]) {
@@ -95,6 +98,15 @@ contract NodeManagers is Ownable {
         }
         delete isManager[account];
         delete managerNodeId[account];
+
+        // Remove from the manager list
+        for (uint i = 0; i < managerList.length; i++) {
+            if (managerList[i] == account) {
+                managerList[i] = managerList[managerList.length - 1];
+                managerList.pop();
+                break;
+            }
+        }
 
         emit ManagerRemoved(account);
     }
@@ -110,7 +122,24 @@ contract NodeManagers is Ownable {
         require(isManager[account], "Address is not a manager");
         return managerNodeId[account];
     }
+
+    /**
+     * @dev Function to retrieve the list of all node managers and their associated nodeIds.
+     * @return A tuple containing two arrays: one with manager addresses and another with the corresponding nodeIds.
+     */
+    function getAllManagers() external view returns (address[] memory, string[] memory) {
+        uint256 length = managerList.length;
+        string[] memory nodeIds = new string[](length);
+
+        // Retrieve the nodeId for each manager
+        for (uint i = 0; i < length; i++) {
+            nodeIds[i] = managerNodeId[managerList[i]];
+        }
+
+        return (managerList, nodeIds); // Return both addresses and nodeIds
+    }
 }
+
 
 /*************************************************************
  * @title DeviceSharingManagement
