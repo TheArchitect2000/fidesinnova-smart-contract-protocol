@@ -172,5 +172,3 @@ contract CommitmentStorage {
         return commitments;
     }
 }
-
-
