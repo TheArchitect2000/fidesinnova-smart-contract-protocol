@@ -1,173 +1,163 @@
-{\rtf1\ansi\ansicpg1252\cocoartf2821
-\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\froman\fcharset0 Times-Roman;}
-{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
-{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
-\margl1440\margr1440\vieww11520\viewh8400\viewkind0
-\deftab720
-\pard\pardeftab720\partightenfactor0
-
-\f0\fs24 \cf0 \expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 [\
-	\{\
-		"anonymous": false,\
-		"inputs": [\
-			\{\
-				"indexed": false,\
-				"internalType": "string",\
-				"name": "nodeId",\
-				"type": "string"\
-			\},\
-			\{\
-				"indexed": false,\
-				"internalType": "string",\
-				"name": "deviceId",\
-				"type": "string"\
-			\},\
-			\{\
-				"indexed": false,\
-				"internalType": "string",\
-				"name": "zkpPayload",\
-				"type": "string"\
-			\},\
-			\{\
-				"indexed": false,\
-				"internalType": "string",\
-				"name": "dataPayload",\
-				"type": "string"\
-			\},\
-			\{\
-				"indexed": false,\
-				"internalType": "uint256",\
-				"name": "timestamp",\
-				"type": "uint256"\
-			\}\
-		],\
-		"name": "ZKPStored",\
-		"type": "event"\
-	\},\
-	\{\
-		"inputs": [\
-			\{\
-				"internalType": "uint256",\
-				"name": "index",\
-				"type": "uint256"\
-			\}\
-		],\
-		"name": "getZKP",\
-		"outputs": [\
-			\{\
-				"internalType": "string",\
-				"name": "nodeId",\
-				"type": "string"\
-			\},\
-			\{\
-				"internalType": "string",\
-				"name": "deviceId",\
-				"type": "string"\
-			\},\
-			\{\
-				"internalType": "string",\
-				"name": "zkpPayload",\
-				"type": "string"\
-			\},\
-			\{\
-				"internalType": "string",\
-				"name": "dataPayload",\
-				"type": "string"\
-			\},\
-			\{\
-				"internalType": "uint256",\
-				"name": "timestamp",\
-				"type": "uint256"\
-			\}\
-		],\
-		"stateMutability": "view",\
-		"type": "function"\
-	\},\
-	\{\
-		"inputs": [],\
-		"name": "getZKPCount",\
-		"outputs": [\
-			\{\
-				"internalType": "uint256",\
-				"name": "",\
-				"type": "uint256"\
-			\}\
-		],\
-		"stateMutability": "view",\
-		"type": "function"\
-	\},\
-	\{\
-		"inputs": [\
-			\{\
-				"internalType": "string",\
-				"name": "nodeId",\
-				"type": "string"\
-			\},\
-			\{\
-				"internalType": "string",\
-				"name": "deviceId",\
-				"type": "string"\
-			\},\
-			\{\
-				"internalType": "string",\
-				"name": "zkpPayload",\
-				"type": "string"\
-			\},\
-			\{\
-				"internalType": "string",\
-				"name": "dataPayload",\
-				"type": "string"\
-			\},\
-			\{\
-				"internalType": "uint256",\
-				"name": "timestamp",\
-				"type": "uint256"\
-			\}\
-		],\
-		"name": "storeZKP",\
-		"outputs": [],\
-		"stateMutability": "nonpayable",\
-		"type": "function"\
-	\},\
-	\{\
-		"inputs": [\
-			\{\
-				"internalType": "uint256",\
-				"name": "",\
-				"type": "uint256"\
-			\}\
-		],\
-		"name": "zkps",\
-		"outputs": [\
-			\{\
-				"internalType": "string",\
-				"name": "nodeId",\
-				"type": "string"\
-			\},\
-			\{\
-				"internalType": "string",\
-				"name": "deviceId",\
-				"type": "string"\
-			\},\
-			\{\
-				"internalType": "string",\
-				"name": "zkpPayload",\
-				"type": "string"\
-			\},\
-			\{\
-				"internalType": "string",\
-				"name": "dataPayload",\
-				"type": "string"\
-			\},\
-			\{\
-				"internalType": "uint256",\
-				"name": "timestamp",\
-				"type": "uint256"\
-			\}\
-		],\
-		"stateMutability": "view",\
-		"type": "function"\
-	\}\
-]\
-}
+[
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "nodeId",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "deviceId",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "zkpPayload",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "dataPayload",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "timestamp",
+				"type": "uint256"
+			}
+		],
+		"name": "ZKPStored",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "index",
+				"type": "uint256"
+			}
+		],
+		"name": "getZKP",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "nodeId",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "deviceId",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "zkpPayload",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "dataPayload",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "timestamp",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getZKPCount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "nodeId",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "deviceId",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "zkpPayload",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "dataPayload",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "timestamp",
+				"type": "uint256"
+			}
+		],
+		"name": "storeZKP",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "zkps",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "nodeId",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "deviceId",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "zkpPayload",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "dataPayload",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "timestamp",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+]
