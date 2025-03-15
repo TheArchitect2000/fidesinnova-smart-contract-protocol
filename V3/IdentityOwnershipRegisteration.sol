@@ -30,7 +30,7 @@ contract IdentityOwnershipRegisteration {
      * @dev Registers a new identity if it does not already exist.
      * @param _nodeId: The node ID associated with this identity.
      */
-    function registerIdentity(string _nodeId) public {
+    function registerIdentity(string memory _nodeId) public {
         require(identities[msg.sender].identityAddress == address(0), "Identity already registered.");
         require(!nodeExists[_nodeId], "Node ID already registered.");
 
