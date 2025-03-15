@@ -15,14 +15,14 @@ contract IdentityOwnershipRegisteration {
     struct Identity {
         address identityAddress;  // Identity address
         address ownershipAddress; // Ownership address
-        uint256 nodeId;           // Node ID associated with the identity
+        string nodeId;           // Node ID associated with the identity
         bool binding;             // Binding flag, false by default
     }
 
     mapping(address => Identity) public identities; // Stores identities with identity address as key
-    mapping(uint256 => bool) public nodeExists;    // Tracks registered node IDs to prevent duplicates
+    mapping(string => bool) public nodeExists;    // Tracks registered node IDs to prevent duplicates
 
-    event IdentityRegistered(address indexed identityAddress, uint256 nodeId);
+    event IdentityRegistered(address indexed identityAddress, string nodeId);
     event OwnershipRegistered(address indexed identityAddress, address indexed ownershipAddress);
     event IdentityBound(address indexed identityAddress, address indexed ownershipAddress);
 
@@ -30,7 +30,7 @@ contract IdentityOwnershipRegisteration {
      * @dev Registers a new identity if it does not already exist.
      * @param _nodeId: The node ID associated with this identity.
      */
-    function registerIdentity(uint256 _nodeId) public {
+    function registerIdentity(string _nodeId) public {
         require(identities[msg.sender].identityAddress == address(0), "Identity already registered.");
         require(!nodeExists[_nodeId], "Node ID already registered.");
 

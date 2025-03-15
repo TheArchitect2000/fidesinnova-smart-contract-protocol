@@ -435,7 +435,7 @@ contract ServiceManagement is DeviceSharingManagement {
         delete s_services[targetId];
     }
 
-    /**
+    /** 
      * @notice Retrieves all services associated with a given node.
      * @dev Can only be executed by the manager of the node.
      * 
@@ -451,4 +451,7 @@ contract ServiceManagement is DeviceSharingManagement {
         }
         return dataArray;
     }
+}
+      contract Protocol is ServiceManagement {
+        constructor(address initialOwner) ServiceManagement(initialOwner) {}
 }
