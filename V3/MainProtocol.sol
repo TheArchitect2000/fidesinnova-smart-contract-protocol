@@ -19,10 +19,10 @@ import "./ZKPStorage.sol";
 // //////////////////////////////////////////////////////////
 
 /*************************************************************
- * @title FidesInnovaMainProtocol
+ * @title MainProtocol
  * @dev A master smart contract to deploy and manage all other contracts in the FidesInnova protocol.
  */
-contract FidesInnovaMainProtocol {
+contract MainProtocol {
     // Addresses of deployed contracts
     address public signIdentityAddress;
     address public deviceNFTAddress;
