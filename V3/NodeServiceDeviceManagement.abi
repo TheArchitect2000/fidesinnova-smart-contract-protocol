@@ -103,6 +103,38 @@
 		"type": "error"
 	},
 	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "nodeId",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "serviceId",
+				"type": "string"
+			}
+		],
+		"name": "ServiceManagement__DuplicatedId",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "nodeId",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "serviceId",
+				"type": "string"
+			}
+		],
+		"name": "ServiceManagement__ServiceIdNotExist",
+		"type": "error"
+	},
+	{
 		"anonymous": false,
 		"inputs": [
 			{
@@ -316,6 +348,168 @@
 		"type": "event"
 	},
 	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "id",
+				"type": "uint256"
+			},
+			{
+				"components": [
+					{
+						"internalType": "string",
+						"name": "nodeId",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "serviceId",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "description",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "serviceType",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "devices",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "installationPrice",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "executionPrice",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "imageUrl",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "program",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "creationDate",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "publishedDate",
+						"type": "string"
+					}
+				],
+				"indexed": false,
+				"internalType": "struct ServiceManagement.Service",
+				"name": "service",
+				"type": "tuple"
+			}
+		],
+		"name": "ServiceCreated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "id",
+				"type": "uint256"
+			},
+			{
+				"components": [
+					{
+						"internalType": "string",
+						"name": "nodeId",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "serviceId",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "description",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "serviceType",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "devices",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "installationPrice",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "executionPrice",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "imageUrl",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "program",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "creationDate",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "publishedDate",
+						"type": "string"
+					}
+				],
+				"indexed": false,
+				"internalType": "struct ServiceManagement.Service",
+				"name": "service",
+				"type": "tuple"
+			}
+		],
+		"name": "ServiceRemoved",
+		"type": "event"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "address",
@@ -413,6 +607,80 @@
 				"internalType": "string",
 				"name": "nodeId",
 				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "serviceId",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "description",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "serviceType",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "devices",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "installationPrice",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "executionPrice",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "imageUrl",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "program",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "creationDate",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "publishedDate",
+				"type": "string"
+			}
+		],
+		"name": "createService",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "nodeId",
+				"type": "string"
 			}
 		],
 		"name": "fetchAllDevices",
@@ -491,6 +759,105 @@
 	{
 		"inputs": [
 			{
+				"internalType": "string",
+				"name": "nodeId",
+				"type": "string"
+			}
+		],
+		"name": "fetchAllServices",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "string",
+						"name": "nodeId",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "serviceId",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "description",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "serviceType",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "devices",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "installationPrice",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "executionPrice",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "imageUrl",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "program",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "creationDate",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "publishedDate",
+						"type": "string"
+					}
+				],
+				"internalType": "struct ServiceManagement.Service[]",
+				"name": "",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getAllManagers",
+		"outputs": [
+			{
+				"internalType": "address[]",
+				"name": "",
+				"type": "address[]"
+			},
+			{
+				"internalType": "string[]",
+				"name": "",
+				"type": "string[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "address",
 				"name": "account",
 				"type": "address"
@@ -552,6 +919,29 @@
 			}
 		],
 		"name": "removeManager",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "targetNodeId",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "targetServiceId",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "nodeId",
+				"type": "string"
+			}
+		],
+		"name": "removeService",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
