@@ -13,7 +13,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
  */
 contract NodeManagers is Ownable {
     mapping(address => bool) private isManager; // Tracks whether an address is a node manager
-    mapping(address => string) private managerNodeId; // Maps each node manager's address to a specific nodeId
+    mapping(address => string) internal managerNodeId; // Maps each node manager's address to a specific nodeId
     address[] private managerList; // List of all node managers
 
     // Custom errors to revert transactions with detailed messages.
@@ -162,7 +162,7 @@ contract DeviceSharingManagement is NodeManagers {
         string useCost;               // Cost of using the device (e.g., '23') FDS token
         string[] deviceCoordination;  // GPS coordinates of the device (e.g., [23.4, 45.6])
         string ownernershipId;        // Digital ownership ID of the device (e.g., wallet address)
-        uint256 sharedTimestamp;      // Timestamp when the device was shared
+        string sharedDateTime;      // Timestamp when the device was shared
         string softwareVersion;       // Software/firmware version of the device (e.g., '1.0.0')
     }
 
@@ -197,7 +197,7 @@ contract DeviceSharingManagement is NodeManagers {
      * @param useCost Cost of using the device (e.g., '23') FDS token
      * @param deviceCoordination GPS coordinates of the device (e.g., [23.4, 45.6])
      * @param ownernershipId Digital ownership ID of the device (e.g., wallet address)
-     * @param sharedTimestamp Timestamp when the device was shared
+     * @param sharedDateTime Timestamp when the device was shared
      * @param softwareVersion Software/firmware version of the device (e.g., '1.0.0')
      * 
      * @return uint256 The unique database ID assigned to the newly created device.
@@ -213,7 +213,7 @@ contract DeviceSharingManagement is NodeManagers {
         string memory useCost,
         string[] memory deviceCoordination,
         string memory ownernershipId,
-        uint256 sharedTimestamp,
+        string memory sharedDateTime,
         string memory softwareVersion
     ) external onlyManagerOfNode(nodeId) returns (uint256) {
         // Ensure the device ID is unique for the node
@@ -234,7 +234,7 @@ contract DeviceSharingManagement is NodeManagers {
             useCost,
             deviceCoordination,
             ownernershipId,
-            sharedTimestamp,
+            sharedDateTime,
             softwareVersion
         );
 
@@ -288,26 +288,55 @@ contract DeviceSharingManagement is NodeManagers {
     }
 
     /**
-     * @dev Fetches all devices associated with a specific node.
-     *      - Can only be executed by the node manager.
-     *      - Returns an array of device details.
+     * @dev Fetches all devices associated with the caller's node.
+     *      - Can only be executed by a registered manager.
+     *      - Returns an array of device details for the caller's node.
      * 
-     * @param nodeId: The unique identifier of the node for which the device details are to be fetched.
-     * 
-     * @return Device[] An array of `Device` structs containing the details of all devices in the node.
+     * @return Device[] An array of `Device` structs containing the details of all devices in the caller's node.
      */
-    function fetchAllDevices(
-        string memory nodeId
-    ) external view onlyManagerOfNode(nodeId) returns (Device[] memory) {
+    function fetchAllDevicesPerNode() external view onlyManager returns (Device[] memory) {
+        string memory nodeId = managerNodeId[msg.sender];
+        uint256 deviceCount = 0;
+
+        // Count the number of devices in the caller's node
+        for (uint256 i = 0; i < s_deviceIDs.length; i++) {
+            if (keccak256(abi.encodePacked(s_devices[s_deviceIDs[i]].nodeId)) == keccak256(abi.encodePacked(nodeId))) {
+                deviceCount++;
+            }
+        }
+
+        Device[] memory dataArray = new Device[](deviceCount);
+        uint256 index = 0;
+
+        // Collect devices belonging to the caller's node
+        for (uint256 i = 0; i < s_deviceIDs.length; i++) {
+            if (keccak256(abi.encodePacked(s_devices[s_deviceIDs[i]].nodeId)) == keccak256(abi.encodePacked(nodeId))) {
+                dataArray[index] = s_devices[s_deviceIDs[i]];
+                index++;
+            }
+        }
+
+        return dataArray;
+    }
+
+    /**
+     * @dev Fetches all devices in the network.
+     *      - Can only be executed by a registered manager.
+     *      - Returns an array of all device details.
+     * 
+     * @return Device[] An array of `Device` structs containing the details of all devices.
+     */
+    function fetchAllDevices() external view onlyManager returns (Device[] memory) {
         Device[] memory dataArray = new Device[](s_deviceIDs.length);
 
-        // Populate the array with device details
+        // Populate the array with all device details
         for (uint256 i = 0; i < s_deviceIDs.length; i++) {
             dataArray[i] = s_devices[s_deviceIDs[i]];
         }
 
         return dataArray;
     }
+
 }
 
 
@@ -464,22 +493,56 @@ contract ServiceManagement is DeviceSharingManagement {
         delete s_services[targetId];
     }
 
-    /** 
-     * @notice Retrieves all services associated with a given node.
-     * @dev Can only be executed by the manager of the node.
+   /**
+     * @dev Fetches all services in the network.
+     *      - Can only be executed by a registered manager.
+     *      - Returns an array of all service details.
      * 
-     * @param nodeId: The unique identifier of the node.
-     * @return Service[] An array containing details of all services within the specified node.
+     * @return Service[] An array of `Service` structs containing the details of all services.
      */
-    function fetchAllServices(
-        string memory nodeId
-    ) external view onlyManagerOfNode(nodeId) returns (Service[] memory) {
+    function fetchAllServices() external view onlyManager returns (Service[] memory) {
         Service[] memory dataArray = new Service[](s_serviceIDs.length);
+
+        // Populate the array with all service details
         for (uint256 i = 0; i < s_serviceIDs.length; i++) {
             dataArray[i] = s_services[s_serviceIDs[i]];
         }
+
         return dataArray;
     }
+
+    /**
+     * @dev Fetches all services associated with the caller's node.
+     *      - Can only be executed by a registered manager.
+     *      - Returns an array of service details for the caller's node.
+     * 
+     * @return Service[] An array of `Service` structs containing the details of all services in the caller's node.
+     */
+    function fetchAllServicesPerNode() external view onlyManager returns (Service[] memory) {
+        string memory nodeId = managerNodeId[msg.sender];
+        uint256 serviceCount = 0;
+
+        // Count the number of services in the caller's node
+        for (uint256 i = 0; i < s_serviceIDs.length; i++) {
+            if (keccak256(abi.encodePacked(s_services[s_serviceIDs[i]].nodeId)) == keccak256(abi.encodePacked(nodeId))) {
+                serviceCount++;
+            }
+        }
+
+        Service[] memory dataArray = new Service[](serviceCount);
+        uint256 index = 0;
+
+        // Collect services belonging to the caller's node
+        for (uint256 i = 0; i < s_serviceIDs.length; i++) {
+            if (keccak256(abi.encodePacked(s_services[s_serviceIDs[i]].nodeId)) == keccak256(abi.encodePacked(nodeId))) {
+                dataArray[index] = s_services[s_serviceIDs[i]];
+                index++;
+            }
+        }
+
+        return dataArray;
+    }
+
 }
       contract Protocol is ServiceManagement {
         constructor(address initialOwner) ServiceManagement(initialOwner) {}
