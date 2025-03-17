@@ -196,9 +196,9 @@
 						"type": "string"
 					},
 					{
-						"internalType": "uint256",
-						"name": "sharedTimestamp",
-						"type": "uint256"
+						"internalType": "string",
+						"name": "sharedDateTime",
+						"type": "string"
 					},
 					{
 						"internalType": "string",
@@ -277,9 +277,9 @@
 						"type": "string"
 					},
 					{
-						"internalType": "uint256",
-						"name": "sharedTimestamp",
-						"type": "uint256"
+						"internalType": "string",
+						"name": "sharedDateTime",
+						"type": "string"
 					},
 					{
 						"internalType": "string",
@@ -580,9 +580,9 @@
 				"type": "string"
 			},
 			{
-				"internalType": "uint256",
-				"name": "sharedTimestamp",
-				"type": "uint256"
+				"internalType": "string",
+				"name": "sharedDateTime",
+				"type": "string"
 			},
 			{
 				"internalType": "string",
@@ -676,7 +676,13 @@
 		"type": "function"
 	},
 	{
-		"inputs": [],
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "nodeId",
+				"type": "string"
+			}
+		],
 		"name": "fetchAllDevices",
 		"outputs": [
 			{
@@ -732,9 +738,9 @@
 						"type": "string"
 					},
 					{
-						"internalType": "uint256",
-						"name": "sharedTimestamp",
-						"type": "uint256"
+						"internalType": "string",
+						"name": "sharedDateTime",
+						"type": "string"
 					},
 					{
 						"internalType": "string",
@@ -751,158 +757,14 @@
 		"type": "function"
 	},
 	{
-		"inputs": [],
-		"name": "fetchAllDevicesPerNode",
-		"outputs": [
+		"inputs": [
 			{
-				"components": [
-					{
-						"internalType": "string",
-						"name": "nodeId",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "deviceId",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "deviceType",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "deviceIdType",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "deviceModel",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "manufacturer",
-						"type": "string"
-					},
-					{
-						"internalType": "string[]",
-						"name": "parameters",
-						"type": "string[]"
-					},
-					{
-						"internalType": "string",
-						"name": "useCost",
-						"type": "string"
-					},
-					{
-						"internalType": "string[]",
-						"name": "deviceCoordination",
-						"type": "string[]"
-					},
-					{
-						"internalType": "string",
-						"name": "ownernershipId",
-						"type": "string"
-					},
-					{
-						"internalType": "uint256",
-						"name": "sharedTimestamp",
-						"type": "uint256"
-					},
-					{
-						"internalType": "string",
-						"name": "softwareVersion",
-						"type": "string"
-					}
-				],
-				"internalType": "struct DeviceSharingManagement.Device[]",
-				"name": "",
-				"type": "tuple[]"
+				"internalType": "string",
+				"name": "nodeId",
+				"type": "string"
 			}
 		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
 		"name": "fetchAllServices",
-		"outputs": [
-			{
-				"components": [
-					{
-						"internalType": "string",
-						"name": "nodeId",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "serviceId",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "name",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "description",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "serviceType",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "devices",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "installationPrice",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "executionPrice",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "imageUrl",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "program",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "creationDate",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "publishedDate",
-						"type": "string"
-					}
-				],
-				"internalType": "struct ServiceManagement.Service[]",
-				"name": "",
-				"type": "tuple[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "fetchAllServicesPerNode",
 		"outputs": [
 			{
 				"components": [
