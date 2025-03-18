@@ -32,7 +32,7 @@ contract IdentityOwnershipRegisteration {
      */
     function registerIdentity(string memory _nodeId) public {
         require(identities[msg.sender].identityAddress == address(0), "Identity already registered.");
-        require(!nodeExists[_nodeId], "Node ID already registered.");
+      //  require(!nodeExists[_nodeId], "Node ID already registered.");
 
         identities[msg.sender] = Identity({
             identityAddress: msg.sender,
@@ -41,7 +41,7 @@ contract IdentityOwnershipRegisteration {
             binding: false
         });
 
-        nodeExists[_nodeId] = true;
+     //   nodeExists[_nodeId] = true;
 
         emit IdentityRegistered(msg.sender, _nodeId);
     }
@@ -52,7 +52,7 @@ contract IdentityOwnershipRegisteration {
      */
     function registerOwnership(address _identityAddress) public {
         require(identities[_identityAddress].identityAddress != address(0), "Identity does not exist.");
-        require(identities[_identityAddress].ownershipAddress == address(0), "Ownership already registered.");
+        require(identities[_identityAddress].binding == false, "The claimed identity has been already binded.");
 
         identities[_identityAddress].ownershipAddress = msg.sender;
 
@@ -68,7 +68,7 @@ contract IdentityOwnershipRegisteration {
 
         require(identity.identityAddress != address(0), "Identity does not exist.");
         require(identity.ownershipAddress == _ownershipAddress, "Ownership address mismatch.");
-        require(!identity.binding, "Already bound.");
+        require(!identity.binding, "Binding is already done.");
 
         identity.binding = true;
 
