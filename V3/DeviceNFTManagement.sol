@@ -1,84 +1,73 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.26;
+pragma solidity ^0.8.26;
 
-/*************************************************************
- * @title DeviceNFTManagement
- * @dev A smart contract to create and transfer NFTs representing IoT devices.
- *      - Ensures that each device (defined by deviceId, deviceIdType, deviceType, manufacturer, and deviceModel) is unique.
- *      - Provides functionality to transfer ownership of the NFT.
- */
-contract DeviceNFTManagement {
-    struct Device {
-        string deviceId;        // Unique identifier for the device
-        string deviceIdType;    // Type of the device ID (e.g., 'MAC', 'VIN')
-        string deviceType;      // Type of the IoT device (e.g., 'Sensor', 'Actuator')
-        string manufacturer;    // Manufacturer of the device
-        string deviceModel;     // Model of the device
-        address ownershipAddress; // Address of the current owner
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract IoTDeviceNFT is ERC721Enumerable {
+    uint256 public tokenCounter;
+
+    struct DeviceInfo {
+        string deviceId;
+        string deviceIdType;
+        string deviceType;
+        string manufacturer;
+        string deviceModel;
     }
 
-    mapping(uint256 => Device) public devices;  // Mapping of NFT ID to Device details
-    mapping(bytes32 => bool) public deviceExists; // Tracks existing devices to prevent duplicates
-    uint256 public nextNFTId; // Counter for NFT IDs
+    // Mapping tokenId => DeviceInfo
+    mapping(uint256 => DeviceInfo) public deviceDetails;
 
-    event NFTCreated(uint256 indexed nftId, address indexed ownershipAddress);
-    event NFTTransferred(uint256 indexed nftId, address indexed from, address indexed to);
+    constructor() ERC721("IoTDeviceNFT", "FDSIOT") {
+        tokenCounter = 1;
+    }
 
     /**
-     * @dev Creates an NFT for an IoT device.
-     *      - Ensures the device is unique before creating it.
-     *      - Assigns ownership to the specified address.
-     * 
-     * @param ownershipAddress The address of the initial owner of the NFT.
-     * @param deviceId The unique identifier of the device.
-     * @param deviceIdType The type of the device ID (e.g., 'MAC', 'VIN').
-     * @param deviceType The type of the IoT device (e.g., 'Sensor', 'Actuator').
-     * @param manufacturer The manufacturer of the IoT device.
-     * @param deviceModel The model of the IoT device.
+     * @dev Mint an NFT for an IoT device.
+     * The caller becomes the owner of the NFT.
      */
-    function createNFT(
-        address ownershipAddress,
+    function mintDeviceNFT(
         string memory deviceId,
         string memory deviceIdType,
         string memory deviceType,
         string memory manufacturer,
         string memory deviceModel
-    ) public {
-        bytes32 deviceHash = keccak256(abi.encode(deviceId, deviceIdType, deviceType, manufacturer, deviceModel));
-        require(!deviceExists[deviceHash], "Device already exists.");
+    ) external returns (uint256) {
+        uint256 newTokenId = tokenCounter;
 
-        devices[nextNFTId] = Device({
-            deviceId: deviceId,
-            deviceIdType: deviceIdType,
-            deviceType: deviceType,
-            manufacturer: manufacturer,
-            deviceModel: deviceModel,
-            ownershipAddress: ownershipAddress
-        });
+        _safeMint(msg.sender, newTokenId);
 
-        deviceExists[deviceHash] = true;
+        deviceDetails[newTokenId] = DeviceInfo(
+            deviceId,
+            deviceIdType,
+            deviceType,
+            manufacturer,
+            deviceModel
+        );
 
-        emit NFTCreated(nextNFTId, ownershipAddress);
-        nextNFTId++;
+        tokenCounter++;
+        return newTokenId;
     }
 
     /**
-     * @dev Transfers ownership of an existing NFT.
-     *      - Ensures the sender is the current owner.
-     *      - Updates the ownership address.
-     * 
-     * @param nftId The ID of the NFT being transferred.
-     * @param receiverOwnershipAddress The address of the new owner.
+     * @dev Get device info by tokenId
      */
-    function transferNFT(uint256 nftId, address receiverOwnershipAddress) public {
-        require(nftId < nextNFTId, "NFT does not exist.");
-        require(msg.sender == devices[nftId].ownershipAddress, "Only the owner can transfer this NFT.");
-        require(receiverOwnershipAddress != address(0), "Invalid new owner address.");
+    function getDeviceInfo(uint256 tokenId) external view returns (
+        string memory deviceId,
+        string memory deviceIdType,
+        string memory deviceType,
+        string memory manufacturer,
+        string memory deviceModel
+    ) {
+        require(tokenCounter >= tokenId && tokenCounter > 1, "Token does not exist");
 
-        address previousOwner = devices[nftId].ownershipAddress;
-        devices[nftId].ownershipAddress = receiverOwnershipAddress;
-
-        emit NFTTransferred(nftId, previousOwner, receiverOwnershipAddress);
+        DeviceInfo memory info = deviceDetails[tokenId];
+        return (
+            info.deviceId,
+            info.deviceIdType,
+            info.deviceType,
+            info.manufacturer,
+            info.deviceModel
+        );
     }
 }
-
