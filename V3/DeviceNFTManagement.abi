@@ -274,6 +274,11 @@
 				"internalType": "string",
 				"name": "deviceModel",
 				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "ipfsMetadataURL",
+				"type": "string"
 			}
 		],
 		"stateMutability": "view",
@@ -332,6 +337,11 @@
 				"internalType": "string",
 				"name": "deviceModel",
 				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "ipfsMetadataURL",
+				"type": "string"
 			}
 		],
 		"stateMutability": "view",
@@ -386,6 +396,11 @@
 			{
 				"internalType": "string",
 				"name": "deviceModel",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "ipfsMetadataURL",
 				"type": "string"
 			}
 		],
